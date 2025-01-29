@@ -56,3 +56,5 @@ Once in the database container, you can get a MySQL CLI in the usual way
 ```bash
 mysql -uroot -p<password> 
 ```
+
+StudyBuddies will be the most friendly platform peers to help students achieve their goals
