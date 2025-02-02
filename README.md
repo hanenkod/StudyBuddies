@@ -1,59 +1,63 @@
-# MySQL, PHPMyAdmin and Node.js (ready for Express development)
+Here’s a summary of the tasks completed for setting up Express.js and MySQL using Docker and Node.js:
 
-This will install Mysql and phpmyadmin (including all dependencies to run Phpmyadmin) AND node.js
+Setting Up Express.js and MySQL for a Database-Driven App
 
-This receipe is for development - Node.js is run in using supervisor: changes to any file in the app will trigger a rebuild automatically.
+1. Project Setup in VS Code with Github Repositories
+	•	Opened a New Project: Created a new folder and linked our Github Repositories to VS code.
+	•	Trusted the Workspace: Approved the security prompt to trust the authors, allowing all project files to be visible.
 
-For security, this receipe uses a .env file for credentials.  A sample is provided in the env-sample file. If using these files for a fresh project, copy the env-sample file to a file called .env.  Do NOT commit the changed .env file into your new project for security reasons (in the node package its included in .gitignore so you can't anyway)
+2. Installing Dependencies
+	•	Node.js Packages: Opened a new terminal in VS Code and ran:
 
-In node.js, we use the MySQl2 packages (to avoid problems with MySQL8) and the dotenv package to read the environment variables.
+npm install
 
-Local files are mounted into the container using the 'volumes' directive in the docker-compose.yml for ease of development.
+This installed all necessary Node.js dependencies specified in the package.json file.
 
-### Super-quickstart your new project:
+3. Running Docker Containers
+	•	Starting Docker Services: Ran the following command to start the Docker containers: (Make sure Docker it’s open)
 
-* Make sure that you don't have any other containers running usind docker ps
-* run ```docker-compose up --build```
+docker-compose up
 
-#### Visit phphmyadmin at:
+This process pulled the necessary Docker images and initialised both the Node.js server and the MySQL database. It’s normal to see the server restart multiple times during this step.
 
-http://localhost:8081/
+4. Verifying Server and Database Connection
+	•	Checked Server and Database:
+	•	Node.js Server: Visited http://127.0.0.1:3000
+	•	phpMyAdmin Interface: Accessed http://127.0.0.1:8081 to manage the MySQL database.
 
-#### Visit your express app at:
-
-http://localhost:3000
-
-For reference, see the video at: https://roehampton.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=6f290a6b-ba94-4729-9632-adcf00ac336e
-
-NB if you are running this on your own computer rather than the azure labs that has been set up for you, you will need to install the following:
-
-* node.js  (windows: https://nodejs.org/en/download/)
-* docker desktop (for windows, this will also prompt you to install linux subsystem for windows https://docs.docker.com/desktop/windows/install/ )
-
-### Whats provided in these scaffolding files?
+5. Database Connectivity
+	•	Configured Database Connection:
+	•	Utilized the dotenv package to load environment variables from the .env file.
+	•	Connected to MySQL using the mysql2 package.
+	•	Database Query Function: Createxd an utility function to execute SQL queries:
 
 
-  * A docker setup which will provide you with node.js, mysql and phpmyadmin, including the configuration needed so that both node.js AND phpmyadmin can 'see' and connect to your mysql database.  If you don't use docker you'll have to set up and connect each of these components separately.
-  * A basic starting file structure for a node.js app.
-  * A package.json file that will pull in the node.js libraries required and start your app as needed.
-  * A db.js file which provides all the code needed to connect to the mysql database, using the credentials in the .env file, and which provides a query() function that can send queries to the database and receive a result.  In order to use this (ie. interact with the database, you simply need to include this file in any file you create that needs this database interaction) with the following code:
+6. Creating and Accessing Test Tables
+	•	Imported SQL File:
+	•	Located the sb2-test.sql file in the provided scaffolding files.
+	•	Accessed phpMyAdmin, navigated to the sd2-test database, and ran the SQL file to populate test data.
+	•	Viewed Data via Express: Verified the data by visiting:
+http://127.0.0.1:3000/db_test
 
-```const db = require('./services/db');
-```
+7. Troubleshooting Docker Issues
+	•	Common Issues Handled:
+	•	Avoided Running Docker from OneDrive: Prevented permission conflicts.
+	•	Skipped Extra Software Installation: Ensured stability on university computers.
+	•	Mac-Specific Fix: Removed SQLite3 if Docker Compose failed:
 
-____
+npm remove sqlite3
 
-Useful commands:
 
-Get a shell in any of the containers
+	•	Windows Users: Restarted the system post-installation for Docker to apply changes effectively.
 
-```bash
-docker exec -it <container name> bash -l
-```
+This workflow demonstrates how to set up a full-stack environment using Docker for containerization, Node.js for server-side logic, and MySQL for database management, all orchestrated within a development environment like VS Code.
 
-Once in the database container, you can get a MySQL CLI in the usual way
 
-```bash
-mysql -uroot -p<password> 
-```
-StudyBuddies will be Legendary.
+Commands used for GITHUB Upload of files.
+
+git status (Checks if there are files that are ready to be staged)
+git add . (Adds all the files to the repository at once)
+git commit -m 'Insert a friendly message' (Commits the files)
+git push (Checks that the files have been staged and changes applied to GITHUB repository)
+git pull (This command allows others user's of the repository to get the files on their machine)
+
