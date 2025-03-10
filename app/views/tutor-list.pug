@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="stylesheet", href="/css/globals.css")
+    link(rel="stylesheet", href="/css/style.css")
+  body
+    .tutor-list-page
+      .div
+        .frame
+          .text-wrapper Search
+          img.interface-essential(src="/images/search.svg")
+        .text-wrapper-2 © 2025 StudyBuddies
+        img.user(src="/images/user.svg")
+        img.img(src="/images/user.svg")
+        img.user-2(src="/images/user.svg")
+        .text-wrapper-3 Web Design and Development
+        .text-wrapper-4 Computer Science
+        .text-wrapper-5 Cybersecurity
+        .text-wrapper-6 Aveline Carter
+        .text-wrapper-7 Rowan Fletcher
+        .text-wrapper-8 Damian Holloway
+        .frame-2
+          .text-wrapper-9 Sort By
+          img.icon(src="/images/chevron-down.svg")
+        hr.line
+        .frame-3
+          each tutor in tutors
+            .group
+              .frame-4
+                .frame-5
+                  .text-wrapper-10 #{tutor.Name} #{tutor.Surname}
+                  .text-wrapper-11 #{tutor.Short_Course_Description}
+                button.button
+                  .text-wrapper-12 Send Message
+                img.user-3(src="/images/user.svg")
+                p.p #{tutor.Short_Message}
+                .frame-6
+                  - for (let i = 0; i < 5; i++)
+                    img.material-symbols(src="/images/star.svg")
+        .group-2
+          button.div-wrapper
+            .text-wrapper-14 Previous
+          button.button-2
+            .text-wrapper-15 Next
+          .group-3
+            .group-wrapper
+              .group-4
+                .text-wrapper-16 1
+                .text-wrapper-17 2
+                .text-wrapper-18 3
+                .text-wrapper-19 7
+                .text-wrapper-20 ...
+            img.arrows-chevron(src="/images/chevron-left.svg")
+            img.arrows-chevron-2(src="/images/chevron-right.svg")
+        .navbar
+          a(href="/").text-wrapper-21 Home
+          .text-wrapper-21 Tasks
+          .text-wrapper-21 Tutors
+          .text-wrapper-21 Profile
+        .frame-8
+          .text-wrapper-9 Category
+          img.icon-2(src="/images/chevron-down.svg")
+        .text-wrapper-22 Find you tutor
+        .text-wrapper-23 Recommended tutors for you
