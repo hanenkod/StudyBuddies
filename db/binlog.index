@@ -6,3 +6,9 @@
 ./binlog.000006
 ./binlog.000007
 ./binlog.000008
+<<<<<<< HEAD
+=======
+./binlog.000009
+./binlog.000010
+./binlog.000011
+>>>>>>> f5d7749 (sprint 3)
