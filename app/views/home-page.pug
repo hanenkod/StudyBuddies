@@ -11,7 +11,7 @@ html
           .rectangle
           .rectangle-2
           img.vector(src="/images/vector.svg")
-          .text-wrapper Why choose StudyBuddies?
+          #why-choose.text-wrapper Why choose StudyBuddies?
           p.reach-out-anytime-we
             | Reach Out Anytime,
             br
@@ -44,27 +44,33 @@ html
             .block
               .text-wrapper-5 Happy Students
               .frame
+                img(src="/images/annie-spratt-QckxruozjRg-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
               p.text-wrapper-6 Over 100 students and we’re just started
             .block-2
               .text-wrapper-7 20+ Subjects Tutored
               .frame
+                img(src="/images/mimi-thian-vdXMSiX-n6M-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
               .text-wrapper-8 We cover every field
             .block-3
               .text-wrapper-5 50+ Peer Tutors
               .frame
+                img(src="/images/brooke-cagle-g1Kr4Ozfoac-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
               .text-wrapper-8 We’re pretty big!
           .contacts
             .overlap-group-wrapper
               .overlap-group-2
+                img(src="/images/vector-3.svg", alt="Vector Image", style="width: 680px; height: 344px; background-size: 100% 100%; left: 28px;")
                 .text-wrapper-9 +44312321213
                 .rectangle-3
                 p.text-wrapper-10 We’re happy to hear from you
             .overlap-group-wrapper
               .overlap-2
+                img(src="/images/vector-4.svg", alt="Vector Image", style="width: 629px; height: 344px; background-size: 100% 100%;")
                 .text-wrapper-11 support@help.com
                 .rectangle-4
                 p.text-wrapper-12 The Best Way To Find Answer
         .overlap-3
+          img(src="/images/vector-2.svg", alt="Vector Image", style="width: 1920px; height: 751px; position: absolute; left: 0;")       
           .overlap-4
             .text-wrapper-13 STUDY BUDDIES
             .future-picture
@@ -74,13 +80,18 @@ html
           p.paragraph
             | Are you feeling like a scared, wide-eyed freshman? Well, dry those tears! We’re your friendly neighborhood
             | study pals, here to make sure you don’t flunk out!
-          button.button
+          button.button(onclick="window.location.href='/profile'")
             .text-wrapper-14 Get Started
-          button.div-wrapper
+          button.div-wrapper(onclick="scrollToSection('why-choose')")
             .text-wrapper-14 Learn More
         .text-wrapper-15 © 2025 StudyBuddies
         .navbar
-          .text-wrapper-16 Home
-          .text-wrapper-16 Tasks
+          a(href="/").text-wrapper-16 Home
+          a(href="/tasks").text-wrapper-16 Tasks
           a(href="/tutors").text-wrapper-16 Tutors
-          .text-wrapper-16 Profile
+          a(href="/profile").text-wrapper-16 Profile
+
+    script.
+      function scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+      }

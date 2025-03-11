@@ -347,7 +347,6 @@
     width: 680px;
     height: 344px;
     left: 28px;
-    background-image: url(https://c.animaapp.com/TUgT0wNM/img/vector-5.svg);
     background-size: 100% 100%;
   }
   
@@ -393,7 +392,6 @@
     width: 629px;
     height: 344px;
     left: 72px;
-    background-image: url(https://c.animaapp.com/TUgT0wNM/img/vector-6.svg);
     background-size: 100% 100%;
   }
   
@@ -440,8 +438,6 @@
     height: 751px;
     top: 196px;
     left: 0;
-    background-image: url(https://c.animaapp.com/TUgT0wNM/img/vector-9.svg);
-    background-size: 100% 100%;
   }
   
   .home-page .overlap-4 {
@@ -522,7 +518,19 @@
     position: absolute;
     top: 426px;
     border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
+
+  .home-page .button:hover {
+    transform: scale(1.05);
+    background-color: #8a8ee0; 
+  }
+
+  .home-page .button:active {
+    transform: scale(0.95);
+  }
+
   
   .home-page .text-wrapper-14 {
     position: relative;
@@ -539,7 +547,7 @@
   .home-page .div-wrapper {
     all: unset;
     box-sizing: border-box;
-    left: 377px;
+    left: 350px;
     background-color: #bbbdf2;
     display: inline-flex;
     align-items: center;
@@ -549,6 +557,18 @@
     position: absolute;
     top: 426px;
     border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .home-page .div-wrapper:hover {
+    transform: scale(1.05);
+    background-color: #a5a7d9; 
+  }
+  
+  
+  .home-page .div-wrapper:active {
+    transform: scale(0.95); 
   }
   
   .home-page .text-wrapper-15 {
@@ -573,10 +593,12 @@
     justify-content: flex-end;
     gap: 69px;
     padding: 23px 94px;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     background-color: #a0a4f2;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    animation: fadeInDown 1s ease-out;
   }
   
   .home-page .text-wrapper-16 {
@@ -585,9 +607,28 @@
     margin-top: -1.00px;
     font-family: "Dela Gothic One", Helvetica;
     font-weight: 400;
-    color: #000000;
+    color: #050259;
     font-size: 20px;
     letter-spacing: 0;
-    line-height: normal;
+    line-height: normal; 
   }
   
+  .navbar {
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .navbar .text-wrapper-16:hover {
+    color: #ffffff;
+    cursor: pointer; 
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
