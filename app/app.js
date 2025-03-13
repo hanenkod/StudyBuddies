@@ -33,6 +33,10 @@ app.get("/tutors", async (req, res) => {
     }
   });
 
+  app.get("/profile", (req, res) => {
+    res.render("profile");
+  });
+
 // Route for testing the database
 app.get("/db_test", async (req, res) => {
     try {
