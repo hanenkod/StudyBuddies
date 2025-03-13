@@ -23,5 +23,12 @@
 ./binlog.000016
 ./binlog.000017
 ./binlog.000018
+<<<<<<< HEAD
 >>>>>>> 421af09 (Sprint 3)
+<<<<<<< HEAD
 >>>>>>> fc02dae (Sprint 3)
+=======
+=======
+./binlog.000019
+>>>>>>> 76cc778 (Sprint 3)
+>>>>>>> 9c9fca6 (Sprint 3)

@@ -1,0 +1,52 @@
+
+
+
+.star {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    background-image: url("/images/star.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .star .star-half {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  .star .star-half.left.hovered {
+    left: 0;
+    background-image: url("/images/star-half-filled.svg");
+    background-position: left center;
+    opacity: 1;
+  }
+  
+  .star .star-half.right.hovered {
+    right: 0;
+    background-image: url("/images/star-half-filled-2.svg");
+    background-position: right center;
+    opacity: 1;
+  }
+  
+  
+  .star .star-half.left.selected {
+    left: 0;
+    background-image: url("/images/star-half-filled.svg");
+    background-position: left center;
+    opacity: 1;
+  }
+  
+  .star .star-half.right.selected {
+    right: 0;
+    background-image: url("/images/star-half-filled-2.svg");
+    background-position: right center;
+    opacity: 1;
+  }
