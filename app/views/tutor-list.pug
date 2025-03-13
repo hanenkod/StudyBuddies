@@ -14,7 +14,9 @@ html
           img.interface-essential(src="/images/search.svg")
 
         .text-wrapper-23 Recommended tutors for you
-          each tutor in tutors.filter(t => t.Rating > 5).slice(0, 3)
+        .recommended-tutors
+          each tutor in tutors.filter(t => t.Rating >= 5).slice(0, 3)
+            .tutor-card
               img.user(src="/images/user.svg")
               .text-wrapper-6 #{tutor.Name} #{tutor.Surname}
               .text-wrapper-3 #{tutor.Short_Course_Description}
@@ -29,7 +31,7 @@ html
             .text-wrapper-9 Sort By
             img.icon(src="/images/chevron-down.svg")
         .frame-3
-          each tutor in tutors.filter(t => t.Rating <= 5).slice(0, 5)
+          each tutor in tutors.filter(t => t.Rating < 5).slice(0, 5)
             .group
               .frame-4
                 .frame-5
@@ -37,11 +39,13 @@ html
                   .text-wrapper-11 #{tutor.Short_Course_Description}
                 button.button
                   .text-wrapper-12 Send Message
-                img.user-3(src="/images/user.svg")
+                img.user-2(src="/images/user.svg")
                 p.p #{tutor.Short_Message}
-                .frame-6
-                  - for (let i = 0; i < tutor.Rating; i++)
-                    img.material-symbols(src="/images/star.svg")
+                .frame-6(data-rating=tutor.Rating)
+                  - for (let i = 0; i < 5; i++)
+                    .star
+                      img.star-icon(src="/images/star-filled.svg", class="filled")
+                      img.star-icon(src="/images/star-half-filled.svg", class="half")
         .group-2
           button.div-wrapper
             .text-wrapper-14 Previous
@@ -63,3 +67,5 @@ html
           a(href="/tasks").text-wrapper-21 Tasks
           a(href="/tutors").text-wrapper-21 Tutors
           a(href="/profile").text-wrapper-21 Profile
+
+script(src="/scripts/showRating.js")

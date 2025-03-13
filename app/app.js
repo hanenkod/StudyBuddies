@@ -11,9 +11,10 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views")); // Specify the folder with the templates
 
 
-// Connecting static files (CSS, images)
+// Connecting static files (CSS, images, scripts)
 app.use(express.static(path.join(__dirname, "../static")));
 app.use(express.static(path.join(__dirname, "images")));
+app.use(express.static(path.join(__dirname, "scripts")));
 
 // Route for the main page
 
