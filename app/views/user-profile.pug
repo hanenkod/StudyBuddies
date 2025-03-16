@@ -3,23 +3,23 @@ html
   head
     meta(charset="utf-8")
     link(rel="stylesheet" href="/css/globals.css")
-    link(rel="stylesheet" href="/css/style3.css")
+    link(rel="stylesheet" href="/css/style2.css")
   body
     .profile
       .div
         .ellipse
         .text
-          .text-wrapper= tutor.Name + ' ' + tutor.Surname
-          .text-wrapper-2= tutor.Course
+          .text-wrapper= user.Name + ' ' + user.Surname
+          .text-wrapper-2= user.Course
           .group
             .text-wrapper-3 Level 1 Badge
             .overlap-group-wrapper
               .overlap-group
                 .group-2
                 .text-wrapper-4 1
-        .text-wrapper-5= tutor.Name + "'s Profile"
+        .text-wrapper-5= user.Name + "'s Profile"
 
-        // Блок с предметами репетитора
+        // Блок с предметами пользователя
         .frame
           each subject in subjects
             .block-wrapper
@@ -47,7 +47,7 @@ html
             .text-wrapper-11 Courses
             .text-wrapper-12 Opened Tasks
             .text-wrapper-13 Resolved Tasks
-            .text-wrapper-14 Tutors
+            .text-wrapper-14 Users
             .frame-3 
               .text-wrapper-15 Search 
 
@@ -55,9 +55,9 @@ html
 
         // Блок рейтинга
         .frame-4
-          .text-wrapper-17 Tutor Rating: #{tutor.Rating} 
-          .text-wrapper-17 Rate this tutor:
-          .stars-container(data-profile-id=tutor.ID)
+          .text-wrapper-17 User Rating: #{user.Rating} 
+          .text-wrapper-17 Rate this user:
+          .stars-container(data-profile-id=user.ID)
             - for (let i = 0; i < 5; i++)
               .star(data-value=i + 1)
                 .star-half.left
