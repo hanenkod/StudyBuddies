@@ -1,0 +1,62 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="stylesheet" href="/css/globals.css")
+    link(rel="stylesheet" href="/css/style3.css")
+  body
+    .profile
+      .div
+        .ellipse
+        .text
+          .text-wrapper= tutor.Name + ' ' + tutor.Surname
+          .text-wrapper-2= tutor.Course
+          .group
+            .text-wrapper-3 Level 1 Badge
+            .overlap-group-wrapper
+              .overlap-group
+                .group-2
+                .text-wrapper-4 1
+        .text-wrapper-5= tutor.Name + "'s Profile"
+
+        // Блок с предметами репетитора
+        .frame
+          each subject in subjects
+            .block-wrapper
+              .block
+                .text-wrapper-6= subject.Name
+                .frame-2
+
+        button.button 
+          .edit-profile Message
+        button.div-wrapper
+          .text-wrapper-7 Report
+
+        .navbar
+          a(href="/").text-wrapper-9 Home
+          a(href="/tutors").text-wrapper-9 Tutors
+          a(href="/profile").text-wrapper-9 Profile
+
+        .overlap
+          .group-3
+            .text-wrapper-11 Courses
+            .text-wrapper-12 Opened Tasks
+            .text-wrapper-13 Resolved Tasks
+            .text-wrapper-14 Tutors
+            .frame-3 
+              .text-wrapper-15 Search 
+
+        .text-wrapper-16 © 2025 StudyBuddies
+
+        // Блок рейтинга
+        .frame-4
+          .text-wrapper-17 Tutor Rating: #{tutor.AverageRating.toFixed(1)} 
+          .text-wrapper-17 Rate this tutor:
+          .stars-container(data-tutor-id=tutor.ID)
+            - for (let i = 0; i < 5; i++)
+              .star(data-value=i + 1)
+                .star-half.left
+                .star-half.right
+
+    script(src="/scripts/showRating.js")
+    script(src="/scripts/star.js")
