@@ -775,3 +775,8 @@
 .modal-button.cancel:hover {
   background-color: #a5a7d9;
 }
+
+.page-btn.active {
+  font-weight: bold;
+  color: #6a66d1; 
+}

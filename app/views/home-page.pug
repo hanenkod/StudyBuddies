@@ -91,7 +91,6 @@ html
           a(href="/tutors").text-wrapper-16 Tutors
           if currentUser
             a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-16 Profile
-            a(href="/logout").text-wrapper-16 Logout
           else
             a(href="/login").text-wrapper-16 Login
 

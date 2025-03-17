@@ -19,7 +19,7 @@ html
                 .text-wrapper-4 1
         .text-wrapper-5= tutor.Name + "'s Profile"
 
-        // Блок с предметами репетитора
+
         .frame
           each subject in subjects
             .block-wrapper
@@ -27,10 +27,16 @@ html
                 .text-wrapper-6= subject.Name
                 .frame-2
 
-        button.button 
-          .edit-profile Message
-        button.div-wrapper
-          .text-wrapper-7 Report
+        if currentUser && currentUser.id == tutor.ID && currentUser.type === "tutor"
+          button.button 
+            .edit-profile Edit Profile
+          button.div-wrapper
+            a(href="/logout").text-wrapper-7 Logout
+        else
+          button.button 
+            .edit-profile Message
+          button.div-wrapper
+            .text-wrapper-7 Report
 
         .navbar
           a(href="/").text-wrapper-9 Home
@@ -38,7 +44,6 @@ html
           a(href="/tutors").text-wrapper-9 Tutors
           if currentUser
             a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-9 Profile
-            a(href="/logout").text-wrapper-9 Logout
           else
             a(href="/login").text-wrapper-9 Login
 

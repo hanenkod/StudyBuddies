@@ -144,13 +144,13 @@
 .login .google {
   width: 22px;
   height: 22px;
-  left: 79px;
+  left: 50px;
 }
 
 .login .facebook {
-  width: 23px;
-  height: 23px;
-  left: 84px;
+  width: 22px;
+  height: 22px;
+  left: 50px;
 }
 
 .login .group {
@@ -220,10 +220,7 @@ input.text-wrapper-6 {
   outline: none;
   font-family: "Dela Gothic One", Helvetica;
   font-size: 16px;
-  color: #050259;
+  color: #000000;
   background-color: transparent;
 }
 
-input.text-wrapper-6:focus {
-  border-bottom: 2px solid #a0a4f2;
-}

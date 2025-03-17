@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     starContainers.forEach(container => {
         const stars = container.querySelectorAll('.star');
-        const tutorID = container.getAttribute('data-tutor-id');
+        const profileID = container.getAttribute('data-profile-id');
         let selectedRating = 0;
 
         stars.forEach(star => {
@@ -74,27 +74,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     rightHalf.classList.add('selected');
                 }
 
-                // Отправка оценки на сервер
+                // Определяем, кого оцениваем
+                const isTutorPage = window.location.pathname.includes("tutor-profile");
+                const ratingData = isTutorPage
+                    ? { tutorID: profileID, rating: selectedRating }
+                    : { userID: profileID, rating: selectedRating };
+
+                const endpoint = isTutorPage ? "/tutor-profile" : "/user-profile";
+
+                // Отправляем оценку на сервер
                 try {
-                    const response = await fetch('/tutor-profile', {
+                    const response = await fetch(endpoint, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            tutorID: tutorID,
-                            rating: selectedRating,
-                        }),
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(ratingData),
                     });
 
                     if (response.ok) {
-                        alert('Rating submitted successfully!');
-                        window.location.reload(); // Обновить страницу для отображения нового рейтинга
+                        alert('Оценка успешно отправлена!');
+                        window.location.reload();
                     } else {
-                        alert('Failed to submit rating.');
+                        alert('Не удалось отправить оценку.');
                     }
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Ошибка:', error);
                 }
             });
         });

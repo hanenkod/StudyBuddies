@@ -1,19 +1,18 @@
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
-const db = require("./services/db"); // Подключение к базе данных
+const db = require("./services/db"); // Connect to the database
 
 const app = express();
 
-// Устанавливаем PUG как шаблонизатор
+// Set PUG as a templateizer
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
-// Подключение статических файлов
+// Connecting static files
 app.use(express.static(path.join(__dirname, "../static")));
 
-
-// Middleware для обработки JSON и сессий
+// Middleware for JSON and session processing
 app.use(express.json());
 app.use(session({
     secret: "123", 
@@ -21,53 +20,53 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// Главная страница
+// Home Page
 app.get("/", (req, res) => {
     res.render("home-page", { currentUser: req.session.user });
 });
 
-// Route for displaying tutors list
+// List of tutors
 app.get("/tutors", async (req, res) => {
     try {
         const sql = 'SELECT * FROM Tutors';
         const tutors = await db.query(sql);
         res.render("tutor-list", { tutors, currentUser: req.session.user });
     } catch (err) {
-        console.error("Error when retrieving data from the database:", err);
+        console.error("Error when uploading tutors:", err);
         res.status(500).send("Server error");
     }
 });
 
-// Маршрут для логина
+// Login page
 app.get("/login", (req, res) => {
     res.render("login", { currentUser: req.session.user });
 });
 
-// Авторизация пользователя
+// User authorization
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
         let user;
-        let userType = "student"; // По умолчанию студент
+        let userType = "user"; // Default - user
 
-        // Проверяем в Users
+        // Check in the Users table
         let userSql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
         let users = await db.query(userSql, [email, password]);
 
         if (users.length === 0) {
-            // Если не найдено, проверяем в Tutors
+            // If not found, check in Tutors
             userSql = "SELECT * FROM Tutors WHERE Email = ? AND Password = ?";
             users = await db.query(userSql, [email, password]);
             if (users.length === 0) {
                 return res.status(401).json({ success: false, message: "Неверный email или пароль" });
             }
-            userType = "tutor"; // Если найден в Tutors, значит это репетитор
+            userType = "tutor";
         }
 
         user = users[0];
 
-        // Сохраняем данные в сессии
+        // Saving data in the session
         req.session.user = {
             id: user.ID,
             name: user.Name,
@@ -77,12 +76,12 @@ app.post("/login", async (req, res) => {
 
         res.json({ success: true, userId: user.ID, userType });
     } catch (error) {
-        console.error("Ошибка при входе:", error);
-        res.status(500).json({ success: false, message: "Ошибка сервера" });
+        console.error("Login Error:", error);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
-// Маршрут для профиля студента
+// User Profile
 app.get("/user-profile/:id", async (req, res) => {
     const userId = req.params.id;
 
@@ -91,7 +90,7 @@ app.get("/user-profile/:id", async (req, res) => {
         const users = await db.query(userSql, [userId]);
 
         if (users.length === 0) {
-            return res.status(404).send("Пользователь не найден");
+            return res.status(404).send("User not found");
         }
 
         const subjectsSql = `
@@ -102,14 +101,46 @@ app.get("/user-profile/:id", async (req, res) => {
         `;
         const subjects = await db.query(subjectsSql, [userId]);
 
-        res.render("user-profile", { user: users[0], subjects, currentUser: req.session.user });
+        // Get the average user rating
+        const avgRatingSql = "SELECT AVG(Rating) AS avgRating FROM Users_Ratings WHERE UserID = ?";
+        const avgRatingResult = await db.query(avgRatingSql, [userId]);
+        const avgRating = avgRatingResult[0].avgRating || 0;
+
+        res.render("user-profile", { user: users[0], subjects, currentUser: req.session.user, avgRating });
     } catch (error) {
-        console.error("Ошибка при загрузке профиля пользователя:", error);
-        res.status(500).send("Ошибка сервера");
+        console.error("Error when loading a user profile:", error);
+        res.status(500).send("Server error");
     }
 });
 
-// Маршрут для профиля репетитора
+app.post("/user-profile", async (req, res) => {
+    const { userID, rating } = req.body;
+    const tutorID = req.session.user ? req.session.user.id : null;
+
+    if (!tutorID || req.session.user.type !== "tutor") {
+        return res.status(403).json({ success: false, message: "Только учителя могут оценивать пользователей" });
+    }
+
+    try {
+        const checkSql = "SELECT * FROM Users_Ratings WHERE TutorID = ? AND UserID = ?";
+        const existingRating = await db.query(checkSql, [tutorID, userID]);
+
+        if (existingRating.length > 0) {
+            const updateSql = "UPDATE Users_Ratings SET Rating = ? WHERE TutorID = ? AND UserID = ?";
+            await db.query(updateSql, [rating, tutorID, userID]);
+        } else {
+            const insertSql = "INSERT INTO Users_Ratings (TutorID, UserID, Rating) VALUES (?, ?, ?)";
+            await db.query(insertSql, [tutorID, userID, rating]);
+        }
+
+        res.json({ success: true, message: "Оценка сохранена" });
+    } catch (error) {
+        console.error("Ошибка при сохранении оценки:", error);
+        res.status(500).json({ success: false, message: "Ошибка сервера" });
+    }
+});
+
+// Tutor Profile
 app.get("/tutor-profile/:id", async (req, res) => {
     const tutorId = req.params.id;
 
@@ -123,27 +154,60 @@ app.get("/tutor-profile/:id", async (req, res) => {
 
         const subjectsSql = `
             SELECT Subjects.Name 
-            FROM Tutor_Subjects 
-            JOIN Subjects ON Tutor_Subjects.SubjectID = Subjects.SubjectID 
-            WHERE Tutor_Subjects.TutorID = ?;
+            FROM Tutors_Subjects 
+            JOIN Subjects ON Tutors_Subjects.SubjectID = Subjects.SubjectID 
+            WHERE Tutors_Subjects.TutorID = ?;
         `;
         const subjects = await db.query(subjectsSql, [tutorId]);
 
-        res.render("tutor-profile", { tutor: tutors[0], subjects, currentUser: req.session.user });
+        // Get the average tutor rating
+        const avgRatingSql = "SELECT AVG(Rating) AS avgRating FROM Tutors_Ratings WHERE TutorID = ?";
+        const avgRatingResult = await db.query(avgRatingSql, [tutorId]);
+        const avgRating = avgRatingResult[0].avgRating || 0;
+
+        res.render("tutor-profile", { tutor: tutors[0], subjects, currentUser: req.session.user, avgRating });
     } catch (error) {
-        console.error("Ошибка при загрузке профиля репетитора:", error);
-        res.status(500).send("Ошибка сервера");
+        console.error("Error when loading a tutor profile:", error);
+        res.status(500).send("Server error");
     }
 });
 
-// Выход из аккаунта
+// Saving the tutor's rating
+app.post("/tutor-profile", async (req, res) => {
+    const { tutorID, rating } = req.body;
+    const userID = req.session.user ? req.session.user.id : null;
+
+    if (!userID || req.session.user.type !== "user") {
+        return res.status(403).json({ success: false, message: "Только пользователи могут оценивать учителей" });
+    }
+
+    try {
+        const checkSql = "SELECT * FROM Tutors_Ratings WHERE TutorID = ? AND UserID = ?";
+        const existingRating = await db.query(checkSql, [tutorID, userID]);
+
+        if (existingRating.length > 0) {
+            const updateSql = "UPDATE Tutors_Ratings SET Rating = ? WHERE TutorID = ? AND UserID = ?";
+            await db.query(updateSql, [rating, tutorID, userID]);
+        } else {
+            const insertSql = "INSERT INTO Tutors_Ratings (TutorID, UserID, Rating) VALUES (?, ?, ?)";
+            await db.query(insertSql, [tutorID, userID, rating]);
+        }
+
+        res.json({ success: true, message: "The rating's been saved" });
+    } catch (error) {
+        console.error("Error when saving a rating:", error);
+        res.status(500).json({ success: false, message: "Server" });
+    }
+});
+
+// Log out of the account
 app.get("/logout", (req, res) => {
     req.session.destroy(() => {
         res.redirect("/login");
     });
 });
 
-// Запуск сервера
+// Start the server
 app.listen(3000, () => {
-    console.log("Сервер запущен на http://127.0.0.1:3000/");
+    console.log("The server runs at http://127.0.0.1:3000/");
 });
