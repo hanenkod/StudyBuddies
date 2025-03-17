@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="stylesheet", href="/css/globals.css")
+    link(rel="stylesheet", href="/css/style4.css")
+  body
+    .login
+      .overlap-group-wrapper
+        .overlap-group
+          .div
+            .text-wrapper Welcome Back
+            .text-wrapper-2 Email
+            .text-wrapper-3 Password
+            .text-wrapper-4 Forgot Password?
+            .frame
+              .log-in-button Sign In with Google
+              img.google(src="/images/google.svg")
+            .frame-2
+              .log-in-button Sign In with Facebook
+              img.facebook(src="/images/facebook.svg")
+            .group
+              .text-wrapper-5 Or continue with
+          form#loginForm
+            .div-wrapper
+              input.text-wrapper-6(type="email", name="email", placeholder="Example@email.com", required)
+            .frame-3
+              input.text-wrapper-6(type="password", name="password", placeholder="Your password", required)
+            .frame-4
+              button.text-wrapper-7(type="submit") Sign In
+
+script(src="/scripts/login.js")

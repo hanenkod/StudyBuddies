@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-
-=======
 .profile {
   background-color: #ffffff;
   display: flex;
@@ -508,7 +504,6 @@
   display: flex; 
   gap: 5px;
 }
->>>>>>> 28d818d (added style3 and tutor profile pages)
 
 .star {
     position: relative;
@@ -558,8 +553,6 @@
     background-image: url("/images/star-half-filled-2.svg");
     background-position: right center;
     opacity: 1;
-<<<<<<< HEAD
-=======
   }
 
   .subjects-grid {
@@ -577,5 +570,4 @@
     font-family: "Dela Gothic One", Helvetica;
     font-size: 16px;
     color: #050259;
->>>>>>> 28d818d (added style3 and tutor profile pages)
   }

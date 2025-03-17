@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const starContainers = document.querySelectorAll('.frame-6');
+    const starContainers = document.querySelectorAll('.stars-container');
 
     starContainers.forEach(container => {
         const stars = container.querySelectorAll('.star');
-
+        const tutorID = container.getAttribute('data-tutor-id');
         let selectedRating = 0;
 
         stars.forEach(star => {
@@ -14,14 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const rect = star.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
 
-                
                 stars.forEach(s => {
                     s.classList.remove('hovered');
                     s.querySelector('.left').classList.remove('hovered');
                     s.querySelector('.right').classList.remove('hovered');
                 });
 
-                
                 const currentValue = parseInt(star.dataset.value, 10);
 
                 stars.forEach(s => {
@@ -33,12 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                
                 if (mouseX <= rect.width / 2) {
-                    leftHalf.classList.add('hovered'); 
+                    leftHalf.classList.add('hovered');
                 } else {
                     leftHalf.classList.add('hovered');
-                    rightHalf.classList.add('hovered'); 
+                    rightHalf.classList.add('hovered');
                 }
             });
 
@@ -50,19 +47,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
 
-            star.addEventListener('click', (e) => {
+            star.addEventListener('click', async (e) => {
                 const rect = star.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 selectedRating = parseInt(star.dataset.value, 10);
 
-                
                 stars.forEach(s => {
                     s.classList.remove('selected');
                     s.querySelector('.left').classList.remove('selected');
                     s.querySelector('.right').classList.remove('selected');
                 });
 
-                
                 stars.forEach(s => {
                     const starValue = parseInt(s.dataset.value, 10);
                     if (starValue < selectedRating) {
@@ -72,32 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                
                 if (mouseX <= rect.width / 2) {
-                    leftHalf.classList.add('selected'); 
+                    leftHalf.classList.add('selected');
                 } else {
                     leftHalf.classList.add('selected');
-<<<<<<< HEAD
-                    rightHalf.classList.add('selected'); 
-=======
                     rightHalf.classList.add('selected');
                 }
 
-<<<<<<< HEAD
                 // Отправка оценки на сервер
-=======
-                // Determine who we're rating
-                const isTutorPage = window.location.pathname.includes("tutor-profile");
-                const ratingData = isTutorPage
-                    ? { tutorID: profileID, rating: selectedRating }
-                    : { userID: profileID, rating: selectedRating };
-
-                const endpoint = isTutorPage ? "/tutor-profile" : "/user-profile";
-
-                // Send the evaluation to the server
->>>>>>> 645c1a0 (Sprint 3)
                 try {
-                    const response = await fetch('/rate-tutor', {
+                    const response = await fetch('/tutor-profile', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -109,21 +88,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     if (response.ok) {
-<<<<<<< HEAD
                         alert('Rating submitted successfully!');
                         window.location.reload(); // Обновить страницу для отображения нового рейтинга
                     } else {
                         alert('Failed to submit rating.');
-=======
-                        alert('Rating has been successfully submitted!');
-                        window.location.reload();
-                    } else {
-                        alert('An error occurred while submitting the rating. Please try again later.');
->>>>>>> 645c1a0 (Sprint 3)
                     }
                 } catch (error) {
                     console.error('Error:', error);
->>>>>>> d8f5229 (Sprint 3)
                 }
             });
         });

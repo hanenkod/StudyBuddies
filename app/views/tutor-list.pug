@@ -7,28 +7,16 @@ html
   body
     .tutor-list-page
       .div
+        .text-wrapper-22 Find your tutor
+
         .frame
           input(type="text", id="searchInput", placeholder="Search")
           img.interface-essential(src="/images/search.svg")
-<<<<<<< HEAD
-        .text-wrapper-2 © 2025 StudyBuddies
-        img.user(src="/images/user.svg")
-        img.img(src="/images/user.svg")
-        img.user-2(src="/images/user.svg")
-        .text-wrapper-3 Web Design and Development
-        .text-wrapper-4 Computer Science
-        .text-wrapper-5 Cybersecurity
-        .text-wrapper-6 Aveline Carter
-        .text-wrapper-7 Rowan Fletcher
-        .text-wrapper-8 Damian Holloway
-        .frame-2
-          .text-wrapper-9 Sort By
-          img.icon(src="/images/chevron-down.svg")
-        hr.line
-=======
 
         .text-wrapper-23 Recommended tutors for you
-          each tutor in tutors.filter(t => t.Rating > 5).slice(0, 3)
+        .recommended-tutors
+          each tutor in tutors.filter(t => t.Rating >= 5).slice(0, 3)
+            .tutor-card
               img.user(src="/images/user.svg")
               a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-6 #{tutor.Name} #{tutor.Surname}
               .text-wrapper-3 #{tutor.Short_Course_Description}
@@ -44,27 +32,22 @@ html
               option(value="default") Default
               option(value="alphabetical") A - Z
               option(value="rating") Rating
->>>>>>> 8bb3c4f (Commit)
         .frame-3
-          each tutor in tutors
+          each tutor in tutors.filter(t => t.Rating < 5).slice(0, 5)
             .group
               .frame-4
                 .frame-5
-<<<<<<< HEAD
-                  .text-wrapper-10 #{tutor.Name} #{tutor.Surname}
-                  .text-wrapper-11 #{tutor.Short_Course_Description}
-                button.button
-=======
                   a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-10 #{tutor.Name} #{tutor.Surname}
                   .text-wrapper-11 #{tutor.Course}
                 button.button.send-message-btn(data-tutor-id=tutor.ID, data-tutor-name=`${tutor.Name} ${tutor.Surname}`)
->>>>>>> b085442 (Commit)
                   .text-wrapper-12 Send Message
-                img.user-3(src="/images/user.svg")
+                img.user-2(src="/images/user.svg")
                 p.p #{tutor.Short_Message}
-                .frame-6
+                .frame-6(data-rating=tutor.Rating)
                   - for (let i = 0; i < 5; i++)
-                    img.material-symbols(src="/images/star.svg")
+                    .star
+                      img.star-icon(src="/images/star-filled.svg", class="filled")
+                      img.star-icon(src="/images/star-half-filled.svg", class="half")
         .group-2
           button.div-wrapper
             .text-wrapper-14 Previous
@@ -80,32 +63,11 @@ html
                 .text-wrapper-20 ...
             img.arrows-chevron(src="/images/chevron-left.svg")
             img.arrows-chevron-2(src="/images/chevron-right.svg")
+        .text-wrapper-2 © 2025 StudyBuddies
         .navbar
           a(href="/").text-wrapper-21 Home
-<<<<<<< HEAD
-          .text-wrapper-21 Tasks
-          .text-wrapper-21 Tutors
-          .text-wrapper-21 Profile
-        .frame-8
-          .text-wrapper-9 Category
-          img.icon-2(src="/images/chevron-down.svg")
-        .text-wrapper-22 Find you tutor
-        .text-wrapper-23 Recommended tutors for you
-=======
           a(href="/tasks").text-wrapper-21 Tasks
           a(href="/tutors").text-wrapper-21 Tutors
-<<<<<<< HEAD
-<<<<<<< HEAD
-          a(href="/profile").text-wrapper-21 Profile
-=======
-          a(href="/profile").text-wrapper-21 Profile
-
-script(src="/scripts/showRating.js")
->>>>>>> 76cc778 (Sprint 3)
-<<<<<<< HEAD
->>>>>>> 9c9fca6 (Sprint 3)
-=======
-=======
           if currentUser
             a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-21 Profile
             a(href="/logout").text-wrapper-21 Logout
@@ -124,5 +86,3 @@ script(src="/scripts/showRating.js")
 script(src="/scripts/showRating.js")
 script(src="/scripts/modal.js")
 script(src="/scripts/sort.js")
->>>>>>> 2b384e4 (Commit)
->>>>>>> 8bb3c4f (Commit)

@@ -80,7 +80,7 @@ html
           p.paragraph
             | Are you feeling like a scared, wide-eyed freshman? Well, dry those tears! We’re your friendly neighborhood
             | study pals, here to make sure you don’t flunk out!
-          button.button(onclick="window.location.href='/profile'")
+          button.button(onclick="window.location.href='/login'")
             .text-wrapper-14 Get Started
           button.div-wrapper(onclick="scrollToSection('why-choose')")
             .text-wrapper-14 Learn More
@@ -89,7 +89,11 @@ html
           a(href="/").text-wrapper-16 Home
           a(href="/tasks").text-wrapper-16 Tasks
           a(href="/tutors").text-wrapper-16 Tutors
-          a(href="/profile").text-wrapper-16 Profile
+          if currentUser
+            a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-16 Profile
+            a(href="/logout").text-wrapper-16 Logout
+          else
+            a(href="/login").text-wrapper-16 Login
 
     script.
       function scrollToSection(sectionId) {

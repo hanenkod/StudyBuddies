@@ -36,8 +36,7 @@
   left: 336px;
 }
 
-.profile .text-wrapper,
-.profile .text-wrapper-2 {
+.profile .text-wrapper {
   position: relative;
   align-self: stretch;
   font-family: "Dela Gothic One", Helvetica;
@@ -47,6 +46,18 @@
   letter-spacing: 0;
   line-height: normal;
 }
+
+.profile .text-wrapper-2 {
+  font-family: "DM Sans", Helvetica;
+  position: relative;
+  align-self: stretch;
+  font-weight: 400;
+  color: #000000;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
 
 .profile .text-wrapper {
   margin-top: -1.00px;
@@ -183,25 +194,30 @@
   padding: 15px 26px;
   position: absolute;
   border-radius: 10px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .profile .button {
   top: 216px;
   left: 1603px;
   background-color: #a0a4f2;
+  width: 180px;
+  height: 51px;
 }
 
 .profile .div-wrapper {
   top: 282px;
   left: 1603px;
   background-color: #ff9999;
+  width: 180px;
+  height: 51px;
 }
 
 .profile .button-2 {
   top: 366px;
   left: 336px;
   background-color: #a0a4f2;
+  width: 250px;
+  height: 51px;
 }
 
 .profile .edit-profile,
@@ -265,8 +281,8 @@
   box-sizing: border-box;
   display: inline-flex;
   height: 44px;
-  top: 76px;
-  left: 415px;
+  top: 519px;
+  left: 555px;
   background-color: #3dd973;
   align-items: center;
   justify-content: center;
@@ -274,6 +290,7 @@
   padding: 15px 26px;
   position: absolute;
   border-radius: 10px;
+  
 }
 
 .profile .text-wrapper-10 {
@@ -410,8 +427,10 @@
 }
 
 .profile .frame-4 {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start; 
+  gap: 10px; 
   position: absolute;
   top: 289px;
   left: 336px;
@@ -433,3 +452,122 @@
     transform: translateY(0);
   }
 }
+
+.profile .button:hover,
+.profile .button-2:hover {
+  background-color: #8683EC;
+  transform: scale(1.05);
+}
+
+.profile .div-wrapper:hover {
+  background-color: #ff6666;
+  transform: scale(1.05);
+}
+
+.profile .button-3:hover {
+  background-color: #2bb662;
+  transform: scale(1.05);
+}
+
+
+.profile .block:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile .material-symbols:hover {
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+.profile .button,
+.profile .div-wrapper,
+.profile .button-2,
+.profile .button-3,
+.profile .block,
+.profile .material-symbols {
+  transition: all 0.3s ease;
+}
+
+.text-wrapper-17 {
+  position: relative;
+  font-family: "Dela Gothic One", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 30px;
+  white-space: nowrap;
+}
+
+.stars-container {
+  display: flex; 
+  gap: 5px;
+}
+
+.star {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    background-image: url("/images/star.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .star .star-half {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  .star .star-half.left.hovered {
+    left: 0;
+    background-image: url("/images/star-half-filled.svg");
+    background-position: left center;
+    opacity: 1;
+  }
+  
+  .star .star-half.right.hovered {
+    right: 0;
+    background-image: url("/images/star-half-filled-2.svg");
+    background-position: right center;
+    opacity: 1;
+  }
+  
+  
+  .star .star-half.left.selected {
+    left: 0;
+    background-image: url("/images/star-half-filled.svg");
+    background-position: left center;
+    opacity: 1;
+  }
+  
+  .star .star-half.right.selected {
+    right: 0;
+    background-image: url("/images/star-half-filled-2.svg");
+    background-position: right center;
+    opacity: 1;
+  }
+
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; 
+    margin-top: 10px;
+  }
+  
+  .subject-block {
+    background-color: #f0f0f0; 
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-family: "Dela Gothic One", Helvetica;
+    font-size: 16px;
+    color: #050259;
+  }

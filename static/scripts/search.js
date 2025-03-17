@@ -1,19 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
-    let tutors = []; // Здесь будут храниться данные о преподавателях
+    let tutors = []; 
 
-    // Функция для получения данных о преподавателях с сервера
+    
     async function fetchTutors() {
         try {
             const response = await fetch('/api/tutors');
             tutors = await response.json();
-            displaySearchResults(tutors); // Отображаем всех преподавателей при загрузке страницы
+            displaySearchResults(tutors); 
         } catch (error) {
             console.error('Ошибка при получении данных:', error);
         }
     }
 
-    // Функция для фильтрации преподавателей
+    
     function filterTutors(query) {
         return tutors.filter(tutor => {
             const fullName = `${tutor.Name} ${tutor.Surname}`.toLowerCase();
@@ -21,10 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Функция для отображения результатов поиска
+    
     function displaySearchResults(results) {
         const resultsContainer = document.querySelector(".frame-3");
-        resultsContainer.innerHTML = ""; // Очищаем контейнер
+        resultsContainer.innerHTML = ""; 
 
         results.forEach(tutor => {
             const tutorElement = document.createElement("div");
@@ -54,18 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Обработчик события ввода в поле поиска
+    
     searchInput.addEventListener("input", (event) => {
         const query = event.target.value.trim();
         if (query) {
             const results = filterTutors(query);
             displaySearchResults(results);
         } else {
-            // Если поле поиска пустое, отображаем всех преподавателей
+            
             displaySearchResults(tutors);
         }
     });
 
-    // Загружаем данные о преподавателях при загрузке страницы
+    
     fetchTutors();
 });
