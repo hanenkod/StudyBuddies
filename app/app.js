@@ -59,7 +59,7 @@ app.post("/login", async (req, res) => {
             userSql = "SELECT * FROM Tutors WHERE Email = ? AND Password = ?";
             users = await db.query(userSql, [email, password]);
             if (users.length === 0) {
-                return res.status(401).json({ success: false, message: "Неверный email или пароль" });
+                return res.status(401).json({ success: false, message: "Incorrect email or password" });
             }
             userType = "tutor";
         }
@@ -118,7 +118,7 @@ app.post("/user-profile", async (req, res) => {
     const tutorID = req.session.user ? req.session.user.id : null;
 
     if (!tutorID || req.session.user.type !== "tutor") {
-        return res.status(403).json({ success: false, message: "Только учителя могут оценивать пользователей" });
+        return res.status(403).json({ success: false, message: "Only teachers can rate Users." });
     }
 
     try {
@@ -133,10 +133,10 @@ app.post("/user-profile", async (req, res) => {
             await db.query(insertSql, [tutorID, userID, rating]);
         }
 
-        res.json({ success: true, message: "Оценка сохранена" });
+        res.json({ success: true, message: "Rating Saved" });
     } catch (error) {
-        console.error("Ошибка при сохранении оценки:", error);
-        res.status(500).json({ success: false, message: "Ошибка сервера" });
+        console.error("Error Saving Rating:", error);
+        res.status(500).json({ success: false, message: "Server Error" });
     }
 });
 
@@ -149,7 +149,7 @@ app.get("/tutor-profile/:id", async (req, res) => {
         const tutors = await db.query(tutorSql, [tutorId]);
 
         if (tutors.length === 0) {
-            return res.status(404).send("Репетитор не найден");
+            return res.status(404).send("Tutor not found");
         }
 
         const subjectsSql = `
@@ -178,7 +178,7 @@ app.post("/tutor-profile", async (req, res) => {
     const userID = req.session.user ? req.session.user.id : null;
 
     if (!userID || req.session.user.type !== "user") {
-        return res.status(403).json({ success: false, message: "Только пользователи могут оценивать учителей" });
+        return res.status(403).json({ success: false, message: "Only Users can rate Teachers" });
     }
 
     try {

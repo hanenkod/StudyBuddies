@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const sendBtn = document.querySelector('.modal-button.send');
     const modalTitle = document.querySelector('.modal-title');
   
-    // Открытие модального окна
+    // Opening a modal window
     sendMessageBtns.forEach(btn => {
       btn.addEventListener('click', function () {
         const tutorName = this.getAttribute('data-tutor-name');
@@ -16,13 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   
-    // Закрытие модального окна
+    // Close the modal window
     closeModalBtn.addEventListener('click', function () {
       modal.classList.remove('open');
       modalOverlay.classList.remove('open');
     });
   
-    // Отправка сообщения
+    // Send message
     sendBtn.addEventListener('click', function () {
       const message = document.querySelector('.modal-input').value;
       if (message.trim()) {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   
-    // Закрытие модального окна при клике на оверлей
+    // Close modal window when clicking on overlay
     modalOverlay.addEventListener('click', function () {
       modal.classList.remove('open');
       modalOverlay.classList.remove('open');

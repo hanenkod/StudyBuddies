@@ -18,10 +18,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
                 ? `/tutor-profile/${data.userId}` 
                 : `/user-profile/${data.userId}`;
         } else {
-            alert("Неверный email или пароль");
+            alert("Incorrect email or password");
         }
     } catch (error) {
-        console.error('Ошибка:', error);
-        alert("Произошла ошибка при входе");
+        console.error('Error:', error);
+        alert("There was an error logging in");
     }
 });

@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     rightHalf.classList.add('selected');
                 }
 
-                // Определяем, кого оцениваем
+                // We define who we evaluate
                 const isTutorPage = window.location.pathname.includes("tutor-profile");
                 const ratingData = isTutorPage
                     ? { tutorID: profileID, rating: selectedRating }
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const endpoint = isTutorPage ? "/tutor-profile" : "/user-profile";
 
-                // Отправляем оценку на сервер
+                // We send the assessment to the server
                 try {
                     const response = await fetch(endpoint, {
                         method: 'POST',
@@ -91,13 +91,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     if (response.ok) {
-                        alert('Оценка успешно отправлена!');
+                        alert('Rating sent successfully!');
                         window.location.reload();
                     } else {
-                        alert('Не удалось отправить оценку.');
+                        alert('Failed to submit rating.');
                     }
                 } catch (error) {
-                    console.error('Ошибка:', error);
+                    console.error('Error:', error);
                 }
             });
         });

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             tutors = await response.json();
             displaySearchResults(tutors); 
         } catch (error) {
-            console.error('Ошибка при получении данных:', error);
+            console.error('Error while receiving data:', error);
         }
     }
 
