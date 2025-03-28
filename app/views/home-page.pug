@@ -1,100 +1,91 @@
-doctype html
-html
-  head
-    meta(charset="utf-8")
-    link(rel="stylesheet", href="/css/globals.css")
-    link(rel="stylesheet", href="/css/style1.css")
-  body
-    .home-page
-      .div
-        .overlap
-          .rectangle
-          .rectangle-2
-          img.vector(src="/images/vector.svg")
-          #why-choose.text-wrapper Why choose StudyBuddies?
-          p.reach-out-anytime-we
-            | Reach Out Anytime,
-            br
-            | We’re here to Help
-          .text-wrapper-2 Our Achievements
-          p
-            | Need assistance or have a question? Contact our friendly staff
-          .text
-            .text-wrapper-3 Reliable Peer Support
-            p.text-wrapper-4 Trouble tackling Trigonometry? Fret not, our student aides have been there.
-          .text-2
-            .text-wrapper-3 Wide Subject Range
-            p.text-wrapper-4 From Architecture to Zoology, we’ve got your back
-          .text-3
-            .text-wrapper-3 Expert Guided Sessions
-            p.text-wrapper-4 Learn directly from top-tier students who’ve cracked the code.
-          .text-4
-            .text-wrapper-3 Time Management
-            p.text-wrapper-4
-              | Master the art of juggling uni-life and actual life. It isn’t magic, just super effective mentoring.
-          .text-5
-            .text-wrapper-3 Fun Activities
-            p.text-wrapper-4 Nothing bonds peers more than having fun together
-          .group
-            .overlap-group
-              .ellipse
-              .ellipse-2
-              .ellipse-3
-          .group-2
-            .block
-              .text-wrapper-5 Happy Students
-              .frame
-                img(src="/images/annie-spratt-QckxruozjRg-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
-              p.text-wrapper-6 Over 100 students and we’re just started
-            .block-2
-              .text-wrapper-7 20+ Subjects Tutored
-              .frame
-                img(src="/images/mimi-thian-vdXMSiX-n6M-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
-              .text-wrapper-8 We cover every field
-            .block-3
-              .text-wrapper-5 50+ Peer Tutors
-              .frame
-                img(src="/images/brooke-cagle-g1Kr4Ozfoac-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
-              .text-wrapper-8 We’re pretty big!
-          .contacts
-            .overlap-group-wrapper
-              .overlap-group-2
-                img(src="/images/vector-3.svg", alt="Vector Image", style="width: 680px; height: 344px; background-size: 100% 100%; left: 28px;")
-                .text-wrapper-9 +44312321213
-                .rectangle-3
-                p.text-wrapper-10 We’re happy to hear from you
-            .overlap-group-wrapper
-              .overlap-2
-                img(src="/images/vector-4.svg", alt="Vector Image", style="width: 629px; height: 344px; background-size: 100% 100%;")
-                .text-wrapper-11 support@help.com
-                .rectangle-4
-                p.text-wrapper-12 The Best Way To Find Answer
-        .overlap-3
-          img(src="/images/vector-2.svg", alt="Vector Image", style="width: 1920px; height: 751px; position: absolute; left: 0;")       
-          .overlap-4
-            .text-wrapper-13 STUDY BUDDIES
-            .future-picture
-              .overlap-group-3
-                .ellipse-4
-                .ellipse-2
-          p.paragraph
-            | Are you feeling like a scared, wide-eyed freshman? Well, dry those tears! We’re your friendly neighborhood
-            | study pals, here to make sure you don’t flunk out!
-          button.button(onclick="window.location.href='/login'")
-            .text-wrapper-14 Get Started
-          button.div-wrapper(onclick="scrollToSection('why-choose')")
-            .text-wrapper-14 Learn More
-        .text-wrapper-15 © 2025 StudyBuddies
-        .navbar
-          a(href="/").text-wrapper-16 Home
-          a(href="/tasks").text-wrapper-16 Tasks
-          a(href="/tutors").text-wrapper-16 Tutors
-          if currentUser
-            a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-16 Profile
-          else
-            a(href="/login").text-wrapper-16 Login
+extends base
 
-    script.
-      function scrollToSection(sectionId) {
-        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-      }
+block styles
+  link(rel="stylesheet", href="/css/style1.css")
+
+block content
+  .home-page
+    .div
+      .overlap
+        .rectangle
+        .rectangle-2
+        img.vector(src="/images/vector.svg")
+        #why-choose.text-wrapper Why choose StudyBuddies?
+        p.reach-out-anytime-we
+          | Reach Out Anytime,
+          br
+          | We're here to Help
+        .text-wrapper-2 Our Achievements
+        p
+          | Need assistance or have a question? Contact our friendly staff
+        .text
+          .text-wrapper-3 Reliable Peer Support
+          p.text-wrapper-4 Trouble tackling Trigonometry? Fret not, our student aides have been there.
+        .text-2
+          .text-wrapper-3 Wide Subject Range
+          p.text-wrapper-4 From Architecture to Zoology, we've got your back
+        .text-3
+          .text-wrapper-3 Expert Guided Sessions
+          p.text-wrapper-4 Learn directly from top-tier students who've cracked the code.
+        .text-4
+          .text-wrapper-3 Time Management
+          p.text-wrapper-4
+            | Master the art of juggling uni-life and actual life. It isn't magic, just super effective mentoring.
+        .text-5
+          .text-wrapper-3 Fun Activities
+          p.text-wrapper-4 Nothing bonds peers more than having fun together
+        .group
+          .overlap-group
+            .ellipse
+            .ellipse-2
+            .ellipse-3
+        .group-2
+          .block
+            .text-wrapper-5 Happy Students
+            .frame
+              img(src="/images/annie-spratt-QckxruozjRg-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
+            p.text-wrapper-6 Over 100 students and we're just started
+          .block-2
+            .text-wrapper-7 20+ Subjects Tutored
+            .frame
+              img(src="/images/mimi-thian-vdXMSiX-n6M-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
+            .text-wrapper-8 We cover every field
+          .block-3
+            .text-wrapper-5 50+ Peer Tutors
+            .frame
+              img(src="/images/brooke-cagle-g1Kr4Ozfoac-unsplash.jpg", alt="Students", style="width: 436px; height: 275px; top: 37px; left: 37px; border-radius: 10px;")
+            .text-wrapper-8 We're pretty big!
+        .contacts
+          .overlap-group-wrapper
+            .overlap-group-2
+              img(src="/images/vector-3.svg", alt="Vector Image", style="width: 680px; height: 344px; background-size: 100% 100%; left: 28px;")
+              .text-wrapper-9 +44312321213
+              .rectangle-3
+              p.text-wrapper-10 We're happy to hear from you
+          .overlap-group-wrapper
+            .overlap-2
+              img(src="/images/vector-4.svg", alt="Vector Image", style="width: 629px; height: 344px; background-size: 100% 100%;")
+              .text-wrapper-11 support@help.com
+              .rectangle-4
+              p.text-wrapper-12 The Best Way To Find Answer
+      .overlap-3
+        img(src="/images/vector-2.svg", alt="Vector Image", style="width: 1920px; height: 751px; position: absolute; left: 0;")       
+        .overlap-4
+          .text-wrapper-13 STUDY BUDDIES
+          .future-picture
+            .overlap-group-3
+              .ellipse-4
+              .ellipse-2
+        p.paragraph
+          | Are you feeling like a scared, wide-eyed freshman? Well, dry those tears! We're your friendly neighborhood
+          | study pals, here to make sure you don't flunk out!
+        button.button(onclick="window.location.href='/login'")
+          .text-wrapper-14 Get Started
+        button.div-wrapper(onclick="scrollToSection('why-choose')")
+          .text-wrapper-14 Learn More
+
+block scripts
+  script.
+    function scrollToSection(sectionId) {
+      document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+    }

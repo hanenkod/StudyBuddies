@@ -234,39 +234,7 @@
   line-height: normal;
 }
 
-.profile .navbar {
-  display: flex;
-  width: 1920px;
-  height: 75px;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 69px;
-  padding: 23px 94px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #a0a4f2;
-  transition: color 0.3s ease, background-color 0.3s ease;
-  animation: fadeInDown 1s ease-out;
-}
 
-.profile .text-wrapper-9 {
-  position: relative;
-  width: fit-content;
-  margin-top: -1.00px;
-  font-family: "Dela Gothic One", Helvetica;
-  font-weight: 400;
-  color: #050259;
-  font-size: 20px;
-  letter-spacing: 0;
-  line-height: normal;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.profile .text-wrapper-9:hover {
-  color: #ffffff;
-  transform: scale(1.1);
-}
 
 .profile .overlap {
   position: absolute;
@@ -412,19 +380,6 @@
   white-space: nowrap;
 }
 
-.profile .text-wrapper-16 {
-  position: absolute;
-  width: 124px;
-  top: 1218px;
-  left: 898px;
-  font-family: "DM Sans", Helvetica;
-  font-weight: 400;
-  color: #000000;
-  font-size: 12px;
-  text-align: center;
-  letter-spacing: 0;
-  line-height: normal;
-}
 
 .profile .frame-4 {
   display: flex;

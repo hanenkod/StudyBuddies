@@ -30,7 +30,19 @@ app.get("/tutors", async (req, res) => {
     try {
         const sql = 'SELECT * FROM Tutors';
         const tutors = await db.query(sql);
-        res.render("tutor-list", { tutors, currentUser: req.session.user });
+        
+        
+        tutors.forEach(tutor => {
+            if (!tutor.Short_Message) {
+                tutor.Short_Message = tutor.Short_Course_Description || '';
+            }
+        });
+        
+        res.render("tutor-list", { 
+            tutors, 
+            currentUser: req.session.user,
+            searchQuery: req.query.search || '' 
+        });
     } catch (err) {
         console.error("Error when uploading tutors:", err);
         res.status(500).send("Server error");

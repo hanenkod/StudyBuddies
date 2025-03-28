@@ -48,19 +48,7 @@
   left: 26px;
 }
 
-.tutor-list-page .text-wrapper-2 {
-  position: absolute;
-  width: 124px;
-  top: 2843px;
-  left: 898px;
-  font-family: "DM Sans", Helvetica;
-  font-weight: 400;
-  color: #000000;
-  font-size: 12px;
-  text-align: center;
-  letter-spacing: 0;
-  line-height: normal;
-}
+
 
 .recommended-tutors {
   display: flex;
@@ -197,6 +185,7 @@
   position: absolute;
   top: 953px;
   left: 140px;
+  min-height: 200px;
 }
 
 .tutor-list-page .group {
@@ -557,54 +546,6 @@
   left: 164px;
 }
 
-.tutor-list-page .navbar {
-  display: flex;
-  width: 1920px;
-  height: 75px;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 69px;
-  padding: 23px 94px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #a0a4f2;
-  transition: color 0.3s ease, background-color 0.3s ease;
-  animation: fadeInDown 1s ease-out;
-}
-
-.navbar {
-  animation: fadeInDown 1s ease-out;
-}
-
-.navbar .text-wrapper-21 {
-  position: relative;
-  width: fit-content;
-  margin-top: -1.00px;
-  font-family: "Dela Gothic One", Helvetica;
-  font-weight: 400;
-  color: #050259;
-  font-size: 20px;
-  letter-spacing: 0;
-  line-height: normal;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.navbar .text-wrapper-21:hover {
-  color: #ffffff;
-  transform: scale(1.1);
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 .tutor-list-page .frame-8 {
   position: absolute;
@@ -682,7 +623,7 @@
   display: block;
 }
 
-/* Стили для модального окна */
+
 .modal {
   display: none;
   position: fixed;
@@ -702,7 +643,7 @@
   display: block;
 }
 
-/* Заголовок модального окна */
+
 .modal-title {
   font-family: "Dela Gothic One", sans-serif;
   font-weight: 400;
@@ -712,7 +653,7 @@
   margin-bottom: 20px;
 }
 
-/* Поле для ввода текста */
+
 .modal-input {
   width: 100%;
   height: 120px;
@@ -732,14 +673,14 @@
   border-color: #8682eb;
 }
 
-/* Контейнер для кнопок */
+
 .modal-buttons {
   display: flex;
   justify-content: space-between;
   gap: 12px;
 }
 
-/* Общие стили для кнопок */
+
 .modal-button {
   flex: 1;
   padding: 12px;
@@ -757,7 +698,7 @@
   transform: translateY(-2px);
 }
 
-/* Стили для кнопки "Send" */
+
 .modal-button.send {
   background-color: #8682eb;
 }
@@ -766,7 +707,7 @@
   background-color: #6a66d1;
 }
 
-/* Стили для кнопки "Cancel" */
+
 .modal-button.cancel {
   background-color: #bbbdf2;
   color: #050259;

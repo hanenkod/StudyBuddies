@@ -571,64 +571,6 @@
     transform: scale(0.95); 
   }
   
-  .home-page .text-wrapper-15 {
-    position: absolute;
-    width: 124px;
-    top: 4126px;
-    left: 898px;
-    font-family: "DM Sans", Helvetica;
-    font-weight: 400;
-    color: #000000;
-    font-size: 12px;
-    text-align: center;
-    letter-spacing: 0;
-    line-height: normal;
-  }
   
-  .home-page .navbar {
-    display: flex;
-    width: 1920px;
-    height: 75px;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 69px;
-    padding: 23px 94px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #a0a4f2;
-    transition: color 0.3s ease, background-color 0.3s ease;
-    animation: fadeInDown 1s ease-out;
-  }
   
-  .home-page .text-wrapper-16 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: "Dela Gothic One", Helvetica;
-    font-weight: 400;
-    color: #050259;
-    font-size: 20px;
-    letter-spacing: 0;
-    line-height: normal; 
-  }
   
-  .navbar {
-    animation: fadeInDown 1s ease-out;
-  }
-
-  .navbar .text-wrapper-16:hover {
-    color: #ffffff;
-    cursor: pointer; 
-  }
-  
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }

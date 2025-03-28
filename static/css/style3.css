@@ -234,21 +234,6 @@
   line-height: normal;
 }
 
-.profile .navbar {
-  display: flex;
-  width: 1920px;
-  height: 75px;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 69px;
-  padding: 23px 94px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #a0a4f2;
-  transition: color 0.3s ease, background-color 0.3s ease;
-  animation: fadeInDown 1s ease-out;
-}
 
 .profile .text-wrapper-9 {
   position: relative;

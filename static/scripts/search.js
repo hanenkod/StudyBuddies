@@ -1,71 +1,69 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("searchInput");
-    let tutors = []; 
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const tutorList = document.getElementById('tutorList');
+    const tutorCards = tutorList.querySelectorAll('.group');
+    const recommendedTutorsSection = document.querySelector('.recommended-tutors');
+    const recommendedTutors = document.querySelectorAll('.recommended-tutors .tutor-card');
 
-    
-    async function fetchTutors() {
-        try {
-            const response = await fetch('/api/tutors');
-            tutors = await response.json();
-            displaySearchResults(tutors); 
-        } catch (error) {
-            console.error('Error while receiving data:', error);
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+
+        if (searchTerm === '') {
+            tutorCards.forEach(card => {
+                card.style.display = '';
+            });
+            recommendedTutors.forEach(card => {
+                card.style.display = '';
+            });
+            recommendedTutorsSection.style.display = 'flex';
+            return;
         }
-    }
 
-    
-    function filterTutors(query) {
-        return tutors.filter(tutor => {
-            const fullName = `${tutor.Name} ${tutor.Surname}`.toLowerCase();
-            return fullName.includes(query.toLowerCase());
+        let hasMatches = false;
+        tutorCards.forEach(card => {
+            const name = card.querySelector('.text-wrapper-10').textContent.toLowerCase();
+            const course = card.querySelector('.text-wrapper-11').textContent.toLowerCase();
+            const description = card.querySelector('.p')?.textContent.toLowerCase() || '';
+
+            if (name.includes(searchTerm) || course.includes(searchTerm) || description.includes(searchTerm)) {
+                card.style.display = ''; 
+                hasMatches = true;
+            } else {
+                card.style.display = 'none';
+            }
         });
-    }
 
-    
-    function displaySearchResults(results) {
-        const resultsContainer = document.querySelector(".frame-3");
-        resultsContainer.innerHTML = ""; 
+        let hasRecommendedMatches = false;
+        recommendedTutors.forEach(card => {
+            const name = card.querySelector('.text-wrapper-6').textContent.toLowerCase();
+            const description = card.querySelector('.text-wrapper-3').textContent.toLowerCase();
 
-        results.forEach(tutor => {
-            const tutorElement = document.createElement("div");
-            tutorElement.className = "group";
-            tutorElement.innerHTML = `
-                <div class="frame-4">
-                    <div class="frame-5">
-                        <div class="text-wrapper-10">${tutor.Name} ${tutor.Surname}</div>
-                        <div class="text-wrapper-11">${tutor.Short_Course_Description}</div>
-                    </div>
-                    <button class="button">
-                        <div class="text-wrapper-12">Send Message</div>
-                    </button>
-                    <img class="user-2" src="/images/user.svg">
-                    <p class="p">${tutor.Short_Message}</p>
-                    <div class="frame-6" data-rating="${tutor.Rating}">
-                        ${Array.from({ length: 5 }, (_, i) => 
-                            `<div class="star">
-                                <img src="/images/star-filled.svg" class="star-icon filled">
-                                <img src="/images/star-half-filled.svg" class="star-icon half">
-                            </div>`
-                        ).join("")}
-                    </div>
-                </div>
-            `;
-            resultsContainer.appendChild(tutorElement);
+            if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                card.style.display = '';
+                hasRecommendedMatches = true;
+            } else {
+                card.style.display = 'none';
+            }
         });
-    }
 
-    
-    searchInput.addEventListener("input", (event) => {
-        const query = event.target.value.trim();
-        if (query) {
-            const results = filterTutors(query);
-            displaySearchResults(results);
+        recommendedTutorsSection.style.display = hasRecommendedMatches ? 'flex' : 'none';
+
+        if (!hasMatches && !hasRecommendedMatches) {
+            let noResults = document.getElementById('noResults');
+            if (!noResults) {
+                noResults = document.createElement('div');
+                noResults.id = 'noResults';
+                noResults.textContent = 'No tutors found matching your search.';
+                noResults.style.textAlign = 'center';
+                noResults.style.padding = '20px';
+                noResults.style.width = '100%';
+                tutorList.appendChild(noResults);
+            }
         } else {
-            
-            displaySearchResults(tutors);
+            const noResults = document.getElementById('noResults');
+            if (noResults) {
+                noResults.remove();
+            }
         }
     });
-
-    
-    fetchTutors();
 });

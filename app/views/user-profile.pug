@@ -1,68 +1,58 @@
-doctype html
-html
-  head
-    meta(charset="utf-8")
-    link(rel="stylesheet" href="/css/globals.css")
-    link(rel="stylesheet" href="/css/style2.css")
-  body
-    .profile
-      .div
-        .ellipse
-        .text
-          .text-wrapper= user.Name + ' ' + user.Surname
-          .text-wrapper-2= user.Course
-          .group
-            .text-wrapper-3 Level 1 Badge
-            .overlap-group-wrapper
-              .overlap-group
-                .group-2
-                .text-wrapper-4 1
-        .text-wrapper-5= user.Name + "'s Profile"
-        .frame
-          each subject in subjects
-            .block-wrapper
-              .block
-                .text-wrapper-6= subject.Name
-                .frame-2
+extends base
 
-        if currentUser && currentUser.id == user.ID
-          button.button 
-            .edit-profile Edit Profile
-          button.div-wrapper
-            a(href="/logout").text-wrapper-7 Logout
-        else
-          button.button 
-            .edit-profile Message
-          button.div-wrapper
-            .text-wrapper-7 Report
+block styles
+  link(rel="stylesheet", href="/css/style2.css")
 
-        .navbar
-          a(href="/").text-wrapper-9 Home
-          a(href="/tasks").text-wrapper-9 Tasks
-          a(href="/tutors").text-wrapper-9 Tutors
-          if currentUser
-            a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-9 Profile
-          else
-            a(href="/login").text-wrapper-9 Login
+block content
+  .profile
+    .div
+      .ellipse
+      .text
+        .text-wrapper= user.Name + ' ' + user.Surname
+        .text-wrapper-2= user.Course
+        .group
+          .text-wrapper-3 Level 1 Badge
+          .overlap-group-wrapper
+            .overlap-group
+              .group-2
+              .text-wrapper-4 1
+      .text-wrapper-5= user.Name + "'s Profile"
+      .frame
+        each subject in subjects
+          .block-wrapper
+            .block
+              .text-wrapper-6= subject.Name
+              .frame-2
 
-        .overlap
-          .group-3
-            .text-wrapper-11 Courses
-            .text-wrapper-12 Opened Tasks
-            .text-wrapper-13 Resolved Tasks
-            .text-wrapper-14 Users
-            .frame-3 
-              .text-wrapper-15 Search 
+      if currentUser && currentUser.id == user.ID
+        button.button 
+          .edit-profile Edit Profile
+        button.div-wrapper
+          a(href="/logout").text-wrapper-7 Logout
+      else
+        button.button 
+          .edit-profile Message
+        button.div-wrapper
+          .text-wrapper-7 Report
 
-        .text-wrapper-16 © 2025 StudyBuddies
-        .frame-4
-          .text-wrapper-17 User Rating: #{user.Rating} 
-          .text-wrapper-17 Rate this user:
-          .stars-container(data-profile-id=user.ID)
-            - for (let i = 0; i < 5; i++)
-              .star(data-value=i + 1)
-                .star-half.left
-                .star-half.right
+      .overlap
+        .group-3
+          .text-wrapper-11 Courses
+          .text-wrapper-12 Opened Tasks
+          .text-wrapper-13 Resolved Tasks
+          .text-wrapper-14 Users
+          .frame-3 
+            .text-wrapper-15 Search 
 
-    script(src="/scripts/showRating.js")
-    script(src="/scripts/star.js")
+      .frame-4
+        .text-wrapper-17 User Rating: #{user.Rating} 
+        .text-wrapper-17 Rate this user:
+        .stars-container(data-profile-id=user.ID)
+          - for (let i = 0; i < 5; i++)
+            .star(data-value=i + 1)
+              .star-half.left
+              .star-half.right
+
+block scripts
+  script(src="/scripts/showRating.js")
+  script(src="/scripts/star.js")

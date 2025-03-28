@@ -17,3 +17,60 @@ button:focus-visible {
 a {
   text-decoration: none;
 }
+
+
+.navbar {
+  display: flex;
+  width: 1920px;
+  height: 75px;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 69px;
+  padding: 23px 94px;
+  background-color: #a0a4f2;
+  animation: fadeInDown 1s ease-out;
+}
+
+
+.nav-link {
+  font-family: "Dela Gothic One", Helvetica;
+  font-weight: 400;
+  color: #050259;
+  font-size: 20px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+
+.footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  font-family: "DM Sans", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  position: relative;
+  top: -45px;
+}

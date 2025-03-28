@@ -1,88 +1,81 @@
-html
-  head
-    meta(charset="utf-8")
-    link(rel="stylesheet", href="/css/globals.css")
-    link(rel="stylesheet", href="/css/style.css")
-  body
-    .tutor-list-page
-      .div
-        .text-wrapper-22 Find your tutor
+extends base
 
-        .frame
-          input(type="text", id="searchInput", placeholder="Search")
-          img.interface-essential(src="/images/search.svg")
+block styles
+  link(rel="stylesheet", href="/css/style.css")
 
-        .text-wrapper-23 Recommended tutors for you
-        .recommended-tutors
+block content
+  .tutor-list-page
+    .div
+      .text-wrapper-22 Find your tutor
+
+      .frame
+        input(type="text", id="searchInput", placeholder="Search", value=searchQuery || '')
+        img.interface-essential(src="/images/search.svg")
+
+      .text-wrapper-23 Recommended tutors for you
+      .recommended-tutors
+        if !searchQuery || searchQuery === ''
           each tutor in tutors.filter(t => t.Rating >= 5).slice(0, 3)
             .tutor-card
               img.user(src="/images/user.svg")
               a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-6 #{tutor.Name} #{tutor.Surname}
               .text-wrapper-3 #{tutor.Short_Course_Description}
 
-        hr.line
+      hr.line
 
-        .filters
-          .frame-8
-            .text-wrapper-9 Category
-            img.icon-2(src="/images/chevron-down.svg")
-          .frame-2
-            select#sort-by
-              option(value="default") Default
-              option(value="alphabetical") A - Z
-              option(value="rating") Rating
-        .frame-3#tutorList
-          each tutor, index in tutors.filter(t => t.Rating < 5)
-            .group(data-index=index)
-              .frame-4
-                .frame-5
-                  a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-10 #{tutor.Name} #{tutor.Surname}
-                  .text-wrapper-11 #{tutor.Course}
-                button.button.send-message-btn(data-tutor-id=tutor.ID, data-tutor-name=`${tutor.Name} ${tutor.Surname}`)
-                  .text-wrapper-12 Send Message
-                img.user-2(src="/images/user.svg")
-                p.p #{tutor.Short_Message}
-                .frame-6(data-rating=tutor.Rating)
-                  - for (let i = 0; i < 5; i++)
-                    .star
-                      img.star-icon(src="/images/star-filled.svg", class="filled")
-                      img.star-icon(src="/images/star-half-filled.svg", class="half")
-        .group-2
-          button#previousBtn.div-wrapper
-            .text-wrapper-14 Previous
-          button#nextBtn.button-2
-            .text-wrapper-15 Next
-          .group-3
-            .group-wrapper
-              .group-4
-                .text-wrapper-16.page-btn(data-page="0") 1
-                .text-wrapper-17.page-btn(data-page="1") 2
-                .text-wrapper-18.page-btn(data-page="2") 3
-                .text-wrapper-20 ...
-                .text-wrapper-19.page-btn(data-page="6") 7
-            img.arrows-chevron#prevPageBtn(src="/images/chevron-left.svg")
-            img.arrows-chevron-2#nextPageBtn(src="/images/chevron-right.svg")
-        .text-wrapper-2 © 2025 StudyBuddies
-        .navbar
-          a(href="/").text-wrapper-21 Home
-          a(href="/tasks").text-wrapper-21 Tasks
-          a(href="/tutors").text-wrapper-21 Tutors
-          if currentUser
-            a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).text-wrapper-21 Profile
-            a(href="/logout").text-wrapper-21 Logout
-          else
-            a(href="/login").text-wrapper-21 Login
+      .filters
+        .frame-8
+          .text-wrapper-9 Category
+          img.icon-2(src="/images/chevron-down.svg")
+        .frame-2
+          select#sort-by
+            option(value="default") Default
+            option(value="alphabetical") A - Z
+            option(value="rating") Rating
+      .frame-3#tutorList
+        each tutor, index in tutors.filter(t => t.Rating < 5)
+          .group(data-index=index)
+            .frame-4
+              .frame-5
+                a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-10 #{tutor.Name} #{tutor.Surname}
+                .text-wrapper-11 #{tutor.Course}
+              button.button.send-message-btn(data-tutor-id=tutor.ID, data-tutor-name=`${tutor.Name} ${tutor.Surname}`)
+                .text-wrapper-12 Send Message
+              img.user-2(src="/images/user.svg")
+              p.p #{tutor.Short_Message}
+              .frame-6(data-rating=tutor.Rating)
+                - for (let i = 0; i < 5; i++)
+                  .star
+                    img.star-icon(src="/images/star-filled.svg", class="filled")
+                    img.star-icon(src="/images/star-half-filled.svg", class="half")
+      .group-2
+        button#previousBtn.div-wrapper
+          .text-wrapper-14 Previous
+        button#nextBtn.button-2
+          .text-wrapper-15 Next
+        .group-3
+          .group-wrapper
+            .group-4
+              .text-wrapper-16.page-btn(data-page="0") 1
+              .text-wrapper-17.page-btn(data-page="1") 2
+              .text-wrapper-18.page-btn(data-page="2") 3
+              .text-wrapper-20 ...
+              .text-wrapper-19.page-btn(data-page="6") 7
+          img.arrows-chevron#prevPageBtn(src="/images/chevron-left.svg")
+          img.arrows-chevron-2#nextPageBtn(src="/images/chevron-right.svg")
 
-        .modal-overlay
-        .modal
-          .modal-content
-            p.modal-title Send a message to #{tutorName}
-            textarea.modal-input(placeholder="Type your message here...")
-            .modal-buttons
-              button.modal-button.send Send
-              button.modal-button.cancel Cancel
+      .modal-overlay
+      .modal
+        .modal-content
+          p.modal-title Send a message to #{tutorName}
+          textarea.modal-input(placeholder="Type your message here...")
+          .modal-buttons
+            button.modal-button.send Send
+            button.modal-button.cancel Cancel
 
-script(src="/scripts/showRating.js")
-script(src="/scripts/modal.js")
-script(src="/scripts/sort.js")
-script(src="/scripts/buttons.js")
+block scripts
+  script(src="/scripts/showRating.js")
+  script(src="/scripts/modal.js")
+  script(src="/scripts/sort.js")
+  script(src="/scripts/buttons.js")
+  script(src="/scripts/search.js")
