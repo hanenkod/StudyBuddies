@@ -1,0 +1,189 @@
+
+.register {
+    background-color: #a0a4f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px 0;
+    box-sizing: border-box;
+  }
+  
+  .register .profile {
+    position: relative;
+    width: 778px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
+    padding: 152px 186px 60px;
+    margin: 0 auto;
+  }
+  
+  .register .text-wrapper {
+    width: 406px;
+    margin: 0 auto 40px;
+    font-family: "Dela Gothic One", Helvetica;
+    font-weight: 400;
+    color: #050259;
+    font-size: 45px;
+    text-align: center;
+    letter-spacing: 0;
+  }
+  
+  .register .form-group {
+    margin-bottom: 25px;
+    width: 406px;
+  }
+  
+  .register .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: "Dela Gothic One", Helvetica;
+    font-weight: 400;
+    color: #050259;
+    font-size: 18px;
+  }
+  
+  .register .form-input {
+    width: 406px;
+    height: 46px;
+    padding: 0 15px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    font-family: "Dela Gothic One", Helvetica;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .register .form-input::placeholder {
+    color: #b3aeae;
+  }
+  
+
+  .register .user-type-container {
+    display: flex;
+    gap: 26px;
+    margin: 30px 0;
+    width: 406px;
+  }
+  
+  .register .user-type-btn {
+    width: 190px;
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    background-color: #ffffff;
+    font-family: "Dela Gothic One", Helvetica;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .register .user-type-btn.active {
+    background-color: #8a8df2;
+  }
+  
+  .register .user-type-btn:hover:not(.active) {
+    background-color: #9a9cf5;
+  }
+  
+
+  .register .submit-btn {
+    width: 406px;
+    height: 46px;
+    margin: 20px 0;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    background-color: #a0a4f2;
+    font-family: "Dela Gothic One", Helvetica;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .register .submit-btn:hover {
+    background-color: #8a8df2;
+    transform: scale(1.02);
+  }
+  
+
+  .register .divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+    color: #9a9494;
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 900;
+    font-size: 14px;
+    width: 406px;
+  }
+  
+  .register .divider::before,
+  .register .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #9a9494;
+    margin: 0 10px;
+  }
+  
+
+  .register .social-btn {
+    position: relative;
+    width: 406px;
+    height: 46px;
+    margin-bottom: 15px;
+    padding: 0 20px 0 60px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    background-color: #BBBDF2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Dela Gothic One", Helvetica;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .register .social-btn:hover {
+    background-color: #8a8df2;
+    transform: scale(1.02);
+  }
+  
+  .register .social-icon {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .register .form-textarea {
+    width: 406px;
+    height: 100px; 
+    padding: 15px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    font-family: "Dela Gothic One", Helvetica;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: none; 
+    overflow-y: auto; 
+  }
+
+  .register .form-textarea::placeholder {
+    color: #b3aeae;
+  }
+
+  .register #shortMessageContainer {
+    display: none; 
+    margin-bottom: 25px;
+    width: 406px;
+  }
+

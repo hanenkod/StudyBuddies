@@ -49,6 +49,101 @@ app.get("/tutors", async (req, res) => {
     }
 });
 
+// Registration page
+app.get("/register", (req, res) => {
+    res.render("register", { currentUser: req.session.user });
+});
+
+// Handle registration
+app.post("/register", async (req, res) => {
+    const { name, surname, course, email, password, userType, subjects, shortMessage } = req.body;
+    
+    try {
+        // Check if email already exists in either table
+        const userCheck = await db.query("SELECT * FROM Users WHERE Email = ?", [email]);
+        const tutorCheck = await db.query("SELECT * FROM Tutors WHERE Email = ?", [email]);
+        
+        if (userCheck.length > 0 || tutorCheck.length > 0) {
+            return res.status(400).json({ success: false, message: "Email already in use" });
+        }
+        
+        let userId;
+        
+        if (userType === "user") {
+            // Insert into Users table
+            const userSql = `
+                INSERT INTO Users (Name, Surname, Course, Email, Password) 
+                VALUES (?, ?, ?, ?, ?)
+            `;
+            const userResult = await db.query(userSql, [name, surname, course, email, password]);
+            userId = userResult.insertId;
+            
+            // Handle subjects for user
+            await processSubjects(subjects, userId, 'user');
+            
+        } else {
+            // Insert into Tutors table
+            const tutorSql = `
+                INSERT INTO Tutors (Name, Surname, Course, Email, Password, Short_Message) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            `;
+            const tutorResult = await db.query(tutorSql, [
+                name, 
+                surname, 
+                course, 
+                email, 
+                password,
+                shortMessage || null  // Use null if shortMessage is empty
+            ]);
+            userId = tutorResult.insertId;
+            
+            // Handle subjects for tutor
+            await processSubjects(subjects, userId, 'tutor');
+        }
+        
+        // Set session and redirect
+        req.session.user = {
+            id: userId,
+            name,
+            surname,
+            type: userType
+        };
+        
+        res.json({ 
+            success: true, 
+            redirectUrl: userType === 'user' ? `/user-profile/${userId}` : `/tutor-profile/${userId}`
+        });
+        
+    } catch (error) {
+        console.error("Registration error:", error);
+        res.status(500).json({ success: false, message: "Server error during registration" });
+    }
+});
+
+// Helper function to process subjects
+async function processSubjects(subjects, userId, userType) {
+    for (const subjectName of subjects) {
+        // Check if subject exists
+        const subjectCheck = await db.query("SELECT SubjectID FROM Subjects WHERE Name = ?", [subjectName]);
+        
+        let subjectId;
+        
+        if (subjectCheck.length > 0) {
+            subjectId = subjectCheck[0].SubjectID;
+        } else {
+            // Create new subject if it doesn't exist
+            const newSubject = await db.query("INSERT INTO Subjects (Name) VALUES (?)", [subjectName]);
+            subjectId = newSubject.insertId;
+        }
+        
+        // Insert into appropriate join table
+        const joinTable = userType === 'user' ? 'Users_Subjects' : 'Tutors_Subjects';
+        const idField = userType === 'user' ? 'UserID' : 'TutorID';
+        
+        await db.query(`INSERT INTO ${joinTable} (${idField}, SubjectID) VALUES (?, ?)`, [userId, subjectId]);
+    }
+}
+
 // Login page
 app.get("/login", (req, res) => {
     res.render("login", { currentUser: req.session.user });
