@@ -1,59 +1,57 @@
 extends base
 
 block styles
-  link(rel="stylesheet", href="/css/style3.css")
+  link(rel="stylesheet", href="/css/profile.css")
 
 block content
-  .profile
-    .div
-      .ellipse
-      .text
-        .text-wrapper= tutor.Name + ' ' + tutor.Surname
-        .text-wrapper-2= tutor.Course
-        .group
-          .text-wrapper-3 Level 1 Badge
-          .overlap-group-wrapper
-            .overlap-group
-              .group-2
-              .text-wrapper-4 1
-      .text-wrapper-5= tutor.Name + "'s Profile"
+  .main-content
+    .profile-container
+      .profile-header
+        .profile-avatar
+          .ellipse
+        .profile-info
+          h1.profile-name= tutor.Name + ' ' + tutor.Surname
+          p.profile-course= tutor.Course
+          .badge-container
+            .badge-level(data-badge-level=tutor.BadgeLevel <= 6 ? tutor.BadgeLevel : '6')
+              span.badge-number= tutor.BadgeLevel
+            span.badge-text Level #{tutor.BadgeLevel} Badge
+        
+        .profile-actions
+          if currentUser && currentUser.id == tutor.ID && currentUser.type === "tutor"
+            button.btn-edit 
+              span.edit-profile Edit Profile
+            a.btn-logout(href="/logout") Logout
+          else
+            button.btn-message Message
+            button.btn-report Report
 
-      .frame
-        each subject in subjects
-          .block-wrapper
-            .block
-              .text-wrapper-6= subject.Name
-              .frame-2
+      .profile-content
+        .profile-tabs
+          button.tab.active Subjects
+          button.tab Opened Tasks
+          button.tab Resolved Tasks
+          button.tab Messages
 
-      if currentUser && currentUser.id == tutor.ID && currentUser.type === "tutor"
-        button.button 
-          .edit-profile Edit Profile
-        button.div-wrapper
-          a(href="/logout").text-wrapper-7 Logout
-      else
-        button.button 
-          .edit-profile Message
-        button.div-wrapper
-          .text-wrapper-7 Report
+        .profile-rating
+          .rating-display
+            span.rating-label Tutor Rating: 
+            span.rating-value= tutor.Rating
+          .rating-input
+            span.rating-label Rate this tutor:
+            .stars-container(data-profile-id=tutor.ID)
+              - for (let i = 0; i < 5; i++)
+                .star(data-value=i + 1)
+                  .star-half.left
+                  .star-half.right
 
-      .overlap
-        .group-3
-          .text-wrapper-11 Courses
-          .text-wrapper-12 Opened Tasks
-          .text-wrapper-13 Resolved Tasks
-          .text-wrapper-14 Tutors
-          .frame-3 
-            .text-wrapper-15 Search 
-
-      // Rating block
-      .frame-4
-        .text-wrapper-17 Tutor Rating: #{tutor.Rating} 
-        .text-wrapper-17 Rate this tutor:
-        .stars-container(data-profile-id=tutor.ID)
-          - for (let i = 0; i < 5; i++)
-            .star(data-value=i + 1)
-              .star-half.left
-              .star-half.right
+        .profile-subjects
+          h2.subjects-title Subjects
+          .subjects-grid
+            each subject in subjects
+              .subject-card
+                .subject-preview
+                h3.subject-title= subject.Name
 
 block scripts
   script(src="/scripts/showRating.js")

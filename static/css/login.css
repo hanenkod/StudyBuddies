@@ -1,0 +1,144 @@
+
+.login {
+  background-color: #a0a4f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  
+}
+
+.login-container {
+  width: 778px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
+  padding: 100px 186px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-text {
+  font-family: "Dela Gothic One", Helvetica;
+  font-weight: 400;
+  color: #050259;
+  font-size: 45px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.input-group {
+  margin-bottom: 25px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Dela Gothic One", Helvetica;
+  font-weight: 400;
+  color: #050259;
+  font-size: 18px;
+}
+
+.form-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 15px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  font-family: "Dela Gothic One", Helvetica;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.form-input::placeholder {
+  color: #b3aeae;
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  margin: -15px 0 25px;
+  font-family: "Dela Gothic One", Helvetica;
+  font-weight: 400;
+  color: #050259;
+  font-size: 18px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.signin-btn {
+  width: 100%;
+  height: 46px;
+  background-color: #a0a4f2;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  font-family: "Dela Gothic One", Helvetica;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 20px 0;
+}
+
+.signin-btn:hover {
+  background-color: #8a8df2;
+  transform: scale(1.02);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 30px 0;
+  color: #9a9494;
+  font-family: "Inter-Black", Helvetica;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #9a9494;
+  margin: 0 10px;
+}
+
+.social-btn {
+  width: 100%;
+  height: 46px;
+  margin-bottom: 15px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  background-color: #BBBDF2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-family: "Dela Gothic One", Helvetica;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+  background-color: #8a8df2;
+  transform: scale(1.02);
+}
+
+.social-icon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+body.login-page {
+  padding-bottom: 0 !important;
+}

@@ -1,37 +1,36 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
 @import url("https://fonts.googleapis.com/css?family=Dela+Gothic+One:400|DM+Sans:400");
+
 * {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
-html,
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+}
+
 body {
-  margin: 0px;
-  height: 100%;
-}
-/* a blue color as a generic focus style */
-button:focus-visible {
-  outline: 2px solid #4a90e2 !important;
-  outline: -webkit-focus-ring-color auto 5px !important;
-}
-a {
-  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px;
 }
 
 
 .navbar {
   display: flex;
-  width: 1920px;
   height: 75px;
   align-items: center;
-  width: 100%;
   justify-content: flex-end;
   gap: 69px;
   padding: 23px 94px;
   background-color: #a0a4f2;
   animation: fadeInDown 1s ease-out;
+  width: 100%;
 }
-
 
 .nav-link {
   font-family: "Dela Gothic One", Helvetica;
@@ -46,31 +45,46 @@ a {
   transform: scale(1.1);
 }
 
+.main-content {
+  flex: 1;
+  padding: 20px 0;
+}
+
 
 .footer {
-  position: fixed;
-  width: 100%;
+  position: absolute;
   bottom: 0;
   left: 0;
-  font-family: "DM Sans", Helvetica;
-  font-weight: 400;
-  color: #000000;
-  font-size: 12px;
-  text-align: center;
-  letter-spacing: 0;
-  line-height: normal;
+  width: 100%;
   padding: 20px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+  color: #666;
+  font-family: 'DM Sans', sans-serif;
+  border-top: 1px solid #eee;
+  background-color: #fff;
 }
 
-.footer-content {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 20px;
-  position: relative;
-  top: -45px;
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+body.login-page {
+  padding-bottom: 0 !important;
+}
+

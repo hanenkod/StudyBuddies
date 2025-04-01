@@ -1,57 +1,57 @@
 extends base
 
 block styles
-  link(rel="stylesheet", href="/css/style2.css")
+  link(rel="stylesheet", href="/css/profile.css")
 
 block content
-  .profile
-    .div
-      .ellipse
-      .text
-        .text-wrapper= user.Name + ' ' + user.Surname
-        .text-wrapper-2= user.Course
-        .group
-          .text-wrapper-3 Level 1 Badge
-          .overlap-group-wrapper
-            .overlap-group
-              .group-2
-              .text-wrapper-4 1
-      .text-wrapper-5= user.Name + "'s Profile"
-      .frame
-        each subject in subjects
-          .block-wrapper
-            .block
-              .text-wrapper-6= subject.Name
-              .frame-2
+  .main-content
+    .profile-container
+      .profile-header
+        .profile-avatar
+          .ellipse
+        .profile-info
+          h1.profile-name= user.Name + ' ' + user.Surname
+          p.profile-course= user.Course
+          .badge-container
+            .badge-level(data-badge-level=user.BadgeLevel <= 6 ? user.BadgeLevel : '6')
+              span.badge-number= user.BadgeLevel
+            span.badge-text Level #{user.BadgeLevel} Badge
+        
+        .profile-actions
+          if currentUser && currentUser.id == user.ID
+            button.btn-edit 
+              span.edit-profile Edit Profile
+            a.btn-logout(href="/logout") Logout
+          else
+            button.btn-message Message
+            button.btn-report Report
 
-      if currentUser && currentUser.id == user.ID
-        button.button 
-          .edit-profile Edit Profile
-        button.div-wrapper
-          a(href="/logout").text-wrapper-7 Logout
-      else
-        button.button 
-          .edit-profile Message
-        button.div-wrapper
-          .text-wrapper-7 Report
+      .profile-content
+        .profile-tabs
+          button.tab.active Subjects
+          button.tab Opened Tasks
+          button.tab Resolved Tasks
+          button.tab Messages
 
-      .overlap
-        .group-3
-          .text-wrapper-11 Courses
-          .text-wrapper-12 Opened Tasks
-          .text-wrapper-13 Resolved Tasks
-          .text-wrapper-14 Users
-          .frame-3 
-            .text-wrapper-15 Search 
+        .profile-rating
+          .rating-display
+            span.rating-label User Rating: 
+            span.rating-value= user.Rating
+          .rating-input
+            span.rating-label Rate this user:
+            .stars-container(data-profile-id=user.ID)
+              - for (let i = 0; i < 5; i++)
+                .star(data-value=i + 1)
+                  .star-half.left
+                  .star-half.right
 
-      .frame-4
-        .text-wrapper-17 User Rating: #{user.Rating} 
-        .text-wrapper-17 Rate this user:
-        .stars-container(data-profile-id=user.ID)
-          - for (let i = 0; i < 5; i++)
-            .star(data-value=i + 1)
-              .star-half.left
-              .star-half.right
+        .profile-subjects
+          h2.subjects-title Subjects
+          .subjects-grid
+            each subject in subjects
+              .subject-card
+                .subject-preview
+                h3.subject-title= subject.Name
 
 block scripts
   script(src="/scripts/showRating.js")

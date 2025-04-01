@@ -1,0 +1,402 @@
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  font-family: 'DM Sans', sans-serif;
+  color: #333;
+}
+
+.profile-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 30px;
+  position: relative;
+  padding-bottom: 30px;
+}
+
+.profile-avatar .ellipse {
+  width: 180px;
+  height: 180px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  border: 3px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+  flex: 1;
+  padding-top: 10px;
+}
+
+.profile-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 36px;
+  color: #050259;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.profile-course {
+  font-size: 20px;
+  color: #666;
+  margin: 0 0 25px 0;
+  font-weight: 500;
+}
+
+.badge-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.badge-level {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  border: 2px solid #000;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.badge-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+}
+
+.badge-level[data-badge-level="1"] {
+  background-color: #e8e4e4;
+  color: #000;
+}
+
+.badge-level[data-badge-level="2"] {
+  background-color: #a0a4f2;
+  color: #000;
+}
+
+.badge-level[data-badge-level="3"] {
+  background-color: #3dd973; 
+  color: #000;
+}
+
+.badge-level[data-badge-level="4"] {
+  background-color: #ffcc00; 
+  color: #000;
+}
+
+.badge-level[data-badge-level="5"] {
+  background-color: #ff6666; 
+  color: #ffffff;
+}
+
+.badge-level[data-badge-level="6"] {
+  background-color: #050259; 
+  color: #ffffff;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.btn-edit, 
+.btn-message, 
+.btn-logout, 
+.btn-report {
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  color: #000; 
+}
+
+.btn-edit, .btn-message {
+  background-color: #a0a4f2;
+}
+
+.btn-logout, .btn-report {
+  background-color: #ff9999;
+  text-decoration: none;
+  text-align: center;
+}
+
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
+}
+
+.tab {
+  padding: 12px 24px;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tab.active {
+  color: #050259;
+}
+
+.tab.active:after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #a0a4f2;
+}
+
+.tab:hover {
+  color: #050259;
+}
+
+.profile-rating {
+  margin-bottom: 40px;
+}
+
+.rating-display, .rating-input {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.rating-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 18px;
+  color: #050259;
+  white-space: nowrap;
+}
+
+.rating-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-subjects {
+  margin-bottom: 60px;
+}
+
+.subjects-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  color: #050259;
+  font-size: 28px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #a0a4f2;
+}
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.subject-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.subject-preview {
+  height: 150px;
+  background-color: #a0a4f2;
+  background-image: linear-gradient(135deg, #a0a4f2 0%, #8683EC 100%);
+  transition: all 0.4s ease;
+}
+
+.subject-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  padding: 20px;
+  margin: 0;
+  color: #050259;
+  font-size: 18px;
+  border-top: 1px solid #eee;
+  transition: all 0.3s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.subject-card:hover .subject-preview {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.subject-card:hover .subject-title {
+  color: #8683EC;
+}
+
+.stars-container {
+  display: flex; 
+  gap: 5px;
+}
+
+.star {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background-image: url("/images/star.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.star .star-half {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  top: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.star .star-half.left.hovered {
+  left: 0;
+  background-image: url("/images/star-half-filled.svg");
+  background-position: left center;
+  opacity: 1;
+}
+
+.star .star-half.right.hovered {
+  right: 0;
+  background-image: url("/images/star-half-filled-2.svg");
+  background-position: right center;
+  opacity: 1;
+}
+
+.star .star-half.left.selected {
+  left: 0;
+  background-image: url("/images/star-half-filled.svg");
+  background-position: left center;
+  opacity: 1;
+}
+
+.star .star-half.right.selected {
+  right: 0;
+  background-image: url("/images/star-half-filled-2.svg");
+  background-position: right center;
+  opacity: 1;
+}
+
+.btn-edit:hover,
+.btn-message:hover {
+  background-color: #8683EC;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(160, 164, 242, 0.4);
+}
+
+.btn-logout:hover,
+.btn-report:hover {
+  background-color: #ff6666;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 102, 102, 0.4);
+}
+
+.tab {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab:hover {
+  transform: translateY(-2px);
+}
+
+.tab.active:hover {
+  transform: none;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-container {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.profile-header {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.profile-content {
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+@media (max-width: 1024px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .profile-actions {
+    position: static;
+    margin-top: 30px;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .badge-container {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 25px;
+  }
+  
+  .subjects-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .rating-display,
+  .rating-input {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
