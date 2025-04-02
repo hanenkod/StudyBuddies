@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
+const bcrypt = require("bcryptjs");
 const db = require("./services/db"); // Connect to the database
 
 const app = express();
@@ -20,7 +21,31 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// Home Page
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+    if (req.session.user) {
+        return next();
+    }
+    res.redirect('/login'); // Redirect to login page if not authenticated
+}
+
+// Middleware to check if the user is a Tutor
+function isTutor(req, res, next) {
+    if (req.session.user && req.session.user.type === 'tutor') {
+        return next();
+    }
+    res.redirect('/'); // Redirect to home page if not a tutor
+}
+
+// Middleware to check if user is a user (Student)
+function isUser(req, res, next) {
+    if (req.session.user && req.session.user.type === 'user') {
+        return next();
+    }
+    res.redirect('/'); // Redirect to home page if not a User (Student)
+}
+
+// Home Page (Open to ALL users)
 app.get("/", (req, res) => {
     res.render("home-page", { currentUser: req.session.user });
 });
@@ -49,7 +74,7 @@ app.get("/tutors", async (req, res) => {
     }
 });
 
-// Registration page
+// Registration page (Open to All users)
 app.get("/register", (req, res) => {
     res.render("register", { currentUser: req.session.user });
 });
@@ -68,14 +93,15 @@ app.post("/register", async (req, res) => {
         }
         
         let userId;
+        const hashedPassword = await bcrypt.hash(password, 10); // Hashing the password before saving
         
         if (userType === "user") {
             // Insert into Users table
-            const userSql = `
-                INSERT INTO Users (Name, Surname, Course, Email, Password) 
-                VALUES (?, ?, ?, ?, ?)
-            `;
-            const userResult = await db.query(userSql, [name, surname, course, email, password]);
+            const userSql = 
+                `INSERT INTO Users (Name, Surname, Course, Email, Password) 
+                VALUES (?, ?, ?, ?, ?)`
+            ;
+            const userResult = await db.query(userSql, [name, surname, course, email, hashedPassword]);
             userId = userResult.insertId;
             
             // Handle subjects for user
@@ -83,16 +109,16 @@ app.post("/register", async (req, res) => {
             
         } else {
             // Insert into Tutors table
-            const tutorSql = `
-                INSERT INTO Tutors (Name, Surname, Course, Email, Password, Short_Message) 
-                VALUES (?, ?, ?, ?, ?, ?)
-            `;
+            const tutorSql = 
+                `INSERT INTO Tutors (Name, Surname, Course, Email, Password, Short_Message) 
+                VALUES (?, ?, ?, ?, ?, ?)`
+            ;
             const tutorResult = await db.query(tutorSql, [
                 name, 
                 surname, 
                 course, 
                 email, 
-                password,
+                hashedPassword,
                 shortMessage || null  // Use null if shortMessage is empty
             ]);
             userId = tutorResult.insertId;
@@ -155,16 +181,16 @@ app.post("/login", async (req, res) => {
 
     try {
         let user;
-        let userType = "user"; // Default - user
+        let userType = "user"; 
 
-        // Check in the Users table
-        let userSql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
-        let users = await db.query(userSql, [email, password]);
+        // Check Users table
+        let userSql = "SELECT * FROM Users WHERE Email = ?";
+        let users = await db.query(userSql, [email]);
 
         if (users.length === 0) {
-            // If not found, check in Tutors
-            userSql = "SELECT * FROM Tutors WHERE Email = ? AND Password = ?";
-            users = await db.query(userSql, [email, password]);
+            // Check Tutors table
+            userSql = "SELECT * FROM Tutors WHERE Email = ?";
+            users = await db.query(userSql, [email]);
             if (users.length === 0) {
                 return res.status(401).json({ success: false, message: "Incorrect email or password" });
             }
@@ -173,24 +199,29 @@ app.post("/login", async (req, res) => {
 
         user = users[0];
 
-        // Saving data in the session
-        req.session.user = {
-            id: user.ID,
-            name: user.Name,
-            surname: user.Surname,
-            type: userType
-        };
+        // Compare hashed password
+        const validPassword = await bcrypt.compare(password, user.Password);
+        if (!validPassword) {
+            return res.status(401).json({ success: false, message: "Incorrect email or password" });
+        }
 
+        req.session.user = { id: user.ID, name: user.Name, surname: user.Surname, type: userType };
         res.json({ success: true, userId: user.ID, userType });
+
     } catch (error) {
         console.error("Login Error:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
-// User Profile
-app.get("/user-profile/:id", async (req, res) => {
+// User Profile (Restricted to Authenticated users of Type 'user')
+app.get("/user-profile/:id", isAuthenticated, isUser, async (req, res) => {
     const userId = req.params.id;
+    const currentUser = req.session.user;
+    
+    if (parseInt(currentUser.id) !== parseInt(userId)) {
+        return res.status(403).send("You are not authorized to access this profile");
+    }
 
     try {
         const userSql = "SELECT * FROM Users WHERE ID = ?";
@@ -200,12 +231,11 @@ app.get("/user-profile/:id", async (req, res) => {
             return res.status(404).send("User not found");
         }
 
-        const subjectsSql = `
-            SELECT Subjects.Name 
-            FROM Users_Subjects 
-            JOIN Subjects ON Users_Subjects.SubjectID = Subjects.SubjectID 
-            WHERE Users_Subjects.UserID = ?;
-        `;
+        const subjectsSql = 
+        `SELECT Subjects.Name 
+        FROM Users_Subjects 
+        JOIN Subjects ON Users_Subjects.SubjectID = Subjects.SubjectID 
+        WHERE Users_Subjects.UserID = ?`;
         const subjects = await db.query(subjectsSql, [userId]);
 
         // Get the average user rating
@@ -248,8 +278,13 @@ app.post("/user-profile", async (req, res) => {
 });
 
 // Tutor Profile
-app.get("/tutor-profile/:id", async (req, res) => {
+app.get("/tutor-profile/:id", isAuthenticated, isTutor, async (req, res) => {
     const tutorId = req.params.id;
+    const currentUser = req.session.user;
+
+    if (parseInt(currentUser.id) !== parseInt(tutorId)) {
+        return res.status(403).send("You are not authorized to access this profile.");
+    }
 
     try {
         const tutorSql = "SELECT * FROM Tutors WHERE ID = ?";
@@ -263,7 +298,7 @@ app.get("/tutor-profile/:id", async (req, res) => {
             SELECT Subjects.Name 
             FROM Tutors_Subjects 
             JOIN Subjects ON Tutors_Subjects.SubjectID = Subjects.SubjectID 
-            WHERE Tutors_Subjects.TutorID = ?;
+            WHERE Tutors_Subjects.TutorID = ?
         `;
         const subjects = await db.query(subjectsSql, [tutorId]);
 
