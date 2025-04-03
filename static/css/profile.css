@@ -7,6 +7,7 @@
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
   font-family: 'DM Sans', sans-serif;
   color: #333;
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
 .profile-header {
@@ -16,6 +17,7 @@
   margin-bottom: 30px;
   position: relative;
   padding-bottom: 30px;
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .profile-avatar .ellipse {
@@ -85,22 +87,22 @@
 }
 
 .badge-level[data-badge-level="3"] {
-  background-color: #3dd973; 
+  background-color: #3dd973;
   color: #000;
 }
 
 .badge-level[data-badge-level="4"] {
-  background-color: #ffcc00; 
+  background-color: #ffcc00;
   color: #000;
 }
 
 .badge-level[data-badge-level="5"] {
-  background-color: #ff6666; 
+  background-color: #ff6666;
   color: #ffffff;
 }
 
 .badge-level[data-badge-level="6"] {
-  background-color: #050259; 
+  background-color: #050259;
   color: #ffffff;
 }
 
@@ -129,7 +131,7 @@
   justify-content: center;
   min-width: 180px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  color: #000; 
+  color: #000;
 }
 
 .btn-edit, .btn-message {
@@ -140,6 +142,10 @@
   background-color: #ff9999;
   text-decoration: none;
   text-align: center;
+}
+
+.profile-content {
+  animation: fadeInUp 1s ease-out forwards;
 }
 
 .profile-tabs {
@@ -262,7 +268,7 @@
 }
 
 .stars-container {
-  display: flex; 
+  display: flex;
   gap: 5px;
 }
 
@@ -352,16 +358,152 @@
   }
 }
 
-.profile-container {
-  animation: fadeInUp 0.6s ease-out forwards;
+
+.modal-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+  overflow-y: auto;
+  padding: 20px;
 }
 
-.profile-header {
-  animation: fadeInUp 0.8s ease-out forwards;
+.modal-container {
+  position: relative;
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  z-index: 1001;
+  width: 450px;
+  max-width: 100%;
+  margin: 20px auto;
+  top: 0;
+  left: 0;
+  transform: none;
+  display: none;
 }
 
-.profile-content {
-  animation: fadeInUp 1s ease-out forwards;
+.modal-overlay.open,
+.modal-container.open {
+  display: block;
+}
+
+.modal-title {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  color: #050259;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.report-textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  color: #050259;
+  resize: none;
+  margin-bottom: 20px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.report-textarea:focus {
+  border-color: #8682eb;
+}
+
+.file-upload {
+  margin-bottom: 20px;
+}
+
+.file-upload label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "DM Sans", sans-serif;
+  color: #666;
+  border: 1px dashed #ccc;
+}
+
+.file-upload label:hover {
+  background-color: #e0e0e0;
+  border-color: #aaa;
+}
+
+.file-upload svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btn-cancel, 
+.btn-submit {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-family: "Dela Gothic One", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-submit {
+  background-color: #8682eb;
+  color: #050259;
+}
+
+.btn-submit:hover {
+  background-color: #6a66d1;
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background-color: #bbbdf2;
+  color: #050259;
+}
+
+.btn-cancel:hover {
+  background-color: #a5a7d9;
+  transform: translateY(-2px);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s;
+}
+
+.modal-close:hover {
+  color: #050259;
 }
 
 @media (max-width: 1024px) {
@@ -398,5 +540,9 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+
+  .modal-container {
+    width: 90%;
   }
 }

@@ -214,15 +214,10 @@ app.post("/login", async (req, res) => {
     }
 });
 
-// User Profile (Restricted to Authenticated users of Type 'user')
-app.get("/user-profile/:id", isAuthenticated, isUser, async (req, res) => {
-    const userId = req.params.id;
-    const currentUser = req.session.user;
-    
-    if (parseInt(currentUser.id) !== parseInt(userId)) {
-        return res.status(403).send("You are not authorized to access this profile");
-    }
 
+app.get("/user-profile/:id", async (req, res) => {
+    const userId = req.params.id;
+    
     try {
         const userSql = "SELECT * FROM Users WHERE ID = ?";
         const users = await db.query(userSql, [userId]);
@@ -243,7 +238,12 @@ app.get("/user-profile/:id", isAuthenticated, isUser, async (req, res) => {
         const avgRatingResult = await db.query(avgRatingSql, [userId]);
         const avgRating = avgRatingResult[0].avgRating || 0;
 
-        res.render("user-profile", { user: users[0], subjects, currentUser: req.session.user, avgRating });
+        res.render("user-profile", { 
+            user: users[0], 
+            subjects, 
+            currentUser: req.session.user, 
+            avgRating 
+        });
     } catch (error) {
         console.error("Error when loading a user profile:", error);
         res.status(500).send("Server error");
@@ -278,13 +278,8 @@ app.post("/user-profile", async (req, res) => {
 });
 
 // Tutor Profile
-app.get("/tutor-profile/:id", isAuthenticated, isTutor, async (req, res) => {
+app.get("/tutor-profile/:id", async (req, res) => {
     const tutorId = req.params.id;
-    const currentUser = req.session.user;
-
-    if (parseInt(currentUser.id) !== parseInt(tutorId)) {
-        return res.status(403).send("You are not authorized to access this profile.");
-    }
 
     try {
         const tutorSql = "SELECT * FROM Tutors WHERE ID = ?";
@@ -307,7 +302,12 @@ app.get("/tutor-profile/:id", isAuthenticated, isTutor, async (req, res) => {
         const avgRatingResult = await db.query(avgRatingSql, [tutorId]);
         const avgRating = avgRatingResult[0].avgRating || 0;
 
-        res.render("tutor-profile", { tutor: tutors[0], subjects, currentUser: req.session.user, avgRating });
+        res.render("tutor-profile", { 
+            tutor: tutors[0], 
+            subjects, 
+            currentUser: req.session.user, 
+            avgRating 
+        });
     } catch (error) {
         console.error("Error when loading a tutor profile:", error);
         res.status(500).send("Server error");

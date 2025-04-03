@@ -53,6 +53,20 @@ block content
                 .subject-preview
                 h3.subject-title= subject.Name
 
+        .modal-overlay(id="reportModal")
+          .modal-container
+              h2.modal-title Report Submission
+              form.report-form
+                textarea.report-textarea(placeholder="Describe the reason why you want to send a report for this person or work")
+                .file-upload
+                  label(for="reportFile")
+                    span Attach File
+                  input(type="file" id="reportFile" style="display: none")
+                .modal-buttons
+                  button.btn-submit(type="submit") Submit
+                  button.btn-cancel(type="button") Cancel
+
 block scripts
   script(src="/scripts/showRating.js")
   script(src="/scripts/star.js")
+  script(src="/scripts/report.js")

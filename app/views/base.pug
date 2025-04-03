@@ -9,7 +9,6 @@ html
     block navbar
       .navbar
         a(href="/").nav-link Home
-        a(href="/tasks").nav-link Tasks
         a(href="/tutors").nav-link Tutors
         if currentUser
           a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).nav-link Profile
