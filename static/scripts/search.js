@@ -1,32 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
-    const tutorList = document.getElementById('tutorList');
-    const tutorCards = tutorList.querySelectorAll('.group');
-    const recommendedTutorsSection = document.querySelector('.recommended-tutors');
-    const recommendedTutors = document.querySelectorAll('.recommended-tutors .tutor-card');
+    const tutorList = document.querySelector('.tutors-list');
+    const tutorCards = tutorList.querySelectorAll('.tutor-card.regular');
+    const recommendedTutorsSection = document.querySelector('.recommended-tutors-grid');
+    const recommendedTutors = document.querySelectorAll('.recommended-tutors-grid .tutor-card');
 
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.trim().toLowerCase();
 
         if (searchTerm === '') {
             tutorCards.forEach(card => {
-                card.style.display = '';
+                card.style.display = 'grid'; // Изменено с 'flex' на 'grid'
+                card.classList.remove('recommended');
             });
             recommendedTutors.forEach(card => {
-                card.style.display = '';
+                card.style.display = 'flex';
             });
-            recommendedTutorsSection.style.display = 'flex';
+            recommendedTutorsSection.style.display = 'grid';
             return;
         }
 
         let hasMatches = false;
         tutorCards.forEach(card => {
-            const name = card.querySelector('.text-wrapper-10').textContent.toLowerCase();
-            const course = card.querySelector('.text-wrapper-11').textContent.toLowerCase();
-            const description = card.querySelector('.p')?.textContent.toLowerCase() || '';
+            const name = card.querySelector('.tutor-name').textContent.toLowerCase();
+            const subject = card.querySelector('.tutor-subject').textContent.toLowerCase();
+            const bio = card.querySelector('.tutor-bio')?.textContent.toLowerCase() || '';
 
-            if (name.includes(searchTerm) || course.includes(searchTerm) || description.includes(searchTerm)) {
-                card.style.display = ''; 
+            if (name.includes(searchTerm) || subject.includes(searchTerm) || bio.includes(searchTerm)) {
+                card.style.display = 'grid'; // Изменено с 'flex' на 'grid'
+                card.classList.remove('recommended');
                 hasMatches = true;
             } else {
                 card.style.display = 'none';
@@ -35,18 +37,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let hasRecommendedMatches = false;
         recommendedTutors.forEach(card => {
-            const name = card.querySelector('.text-wrapper-6').textContent.toLowerCase();
-            const description = card.querySelector('.text-wrapper-3').textContent.toLowerCase();
+            const name = card.querySelector('.tutor-name').textContent.toLowerCase();
+            const subject = card.querySelector('.tutor-subject').textContent.toLowerCase();
+            const description = card.querySelector('.tutor-description').textContent.toLowerCase();
 
-            if (name.includes(searchTerm) || description.includes(searchTerm)) {
-                card.style.display = '';
+            if (name.includes(searchTerm) || subject.includes(searchTerm) || description.includes(searchTerm)) {
+                card.style.display = 'flex';
                 hasRecommendedMatches = true;
             } else {
                 card.style.display = 'none';
             }
         });
 
-        recommendedTutorsSection.style.display = hasRecommendedMatches ? 'flex' : 'none';
+        recommendedTutorsSection.style.display = hasRecommendedMatches ? 'grid' : 'none';
 
         if (!hasMatches && !hasRecommendedMatches) {
             let noResults = document.getElementById('noResults');

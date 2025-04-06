@@ -2,11 +2,32 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
-const db = require("./services/db"); // Connect to the database
+const db = require("./services/db");
+const WebSocket = require('ws');
+const multer = require('multer');
+const fs = require('fs');
+const sanitize = require('sanitize-filename');
 
 const app = express();
 
-// Set PUG as a templateizer
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB
+    }
+});
+
+// Set PUG as a template engine
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
@@ -15,6 +36,7 @@ app.use(express.static(path.join(__dirname, "../static")));
 
 // Middleware for JSON and session processing
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: "123", 
     resave: false, 
@@ -26,7 +48,7 @@ function isAuthenticated(req, res, next) {
     if (req.session.user) {
         return next();
     }
-    res.redirect('/login'); // Redirect to login page if not authenticated
+    res.redirect('/login');
 }
 
 // Middleware to check if the user is a Tutor
@@ -34,7 +56,7 @@ function isTutor(req, res, next) {
     if (req.session.user && req.session.user.type === 'tutor') {
         return next();
     }
-    res.redirect('/'); // Redirect to home page if not a tutor
+    res.redirect('/');
 }
 
 // Middleware to check if user is a user (Student)
@@ -42,8 +64,15 @@ function isUser(req, res, next) {
     if (req.session.user && req.session.user.type === 'user') {
         return next();
     }
-    res.redirect('/'); // Redirect to home page if not a User (Student)
+    res.redirect('/');
 }
+
+// Middleware CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 
 // Home Page (Open to ALL users)
 app.get("/", (req, res) => {
@@ -55,7 +84,6 @@ app.get("/tutors", async (req, res) => {
     try {
         const sql = 'SELECT * FROM Tutors';
         const tutors = await db.query(sql);
-        
         
         tutors.forEach(tutor => {
             if (!tutor.Short_Message) {
@@ -93,7 +121,7 @@ app.post("/register", async (req, res) => {
         }
         
         let userId;
-        const hashedPassword = await bcrypt.hash(password, 10); // Hashing the password before saving
+        const hashedPassword = await bcrypt.hash(password, 10);
         
         if (userType === "user") {
             // Insert into Users table
@@ -119,7 +147,7 @@ app.post("/register", async (req, res) => {
                 course, 
                 email, 
                 hashedPassword,
-                shortMessage || null  // Use null if shortMessage is empty
+                shortMessage || null
             ]);
             userId = tutorResult.insertId;
             
@@ -214,7 +242,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
+// User Profile
 app.get("/user-profile/:id", async (req, res) => {
     const userId = req.params.id;
     
@@ -250,6 +278,7 @@ app.get("/user-profile/:id", async (req, res) => {
     }
 });
 
+// Saving user rating
 app.post("/user-profile", async (req, res) => {
     const { userID, rating } = req.body;
     const tutorID = req.session.user ? req.session.user.id : null;
@@ -342,6 +371,399 @@ app.post("/tutor-profile", async (req, res) => {
     }
 });
 
+// Messages System
+
+// Get list of chats for the current user
+app.get("/api/chats", isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        const userType = req.session.user.type;
+        
+        let chats;
+        if (userType === 'user') {
+            chats = await db.query(`
+                SELECT c.ChatID, t.ID as TutorID, t.Name, t.Surname, t.Course, 
+                       m.MessageText as LastMessage, m.Timestamp as LastMessageTime,
+                       SUM(CASE WHEN m.IsRead = FALSE AND m.ReceiverID = ? THEN 1 ELSE 0 END) as UnreadCount
+                FROM Chats c
+                JOIN Tutors t ON c.TutorID = t.ID
+                LEFT JOIN Messages m ON (
+                    m.MessageID = (SELECT MAX(MessageID) FROM Messages 
+                                   WHERE (SenderID = c.UserID AND ReceiverID = c.TutorID) 
+                                   OR (SenderID = c.TutorID AND ReceiverID = c.UserID))
+                )
+                WHERE c.UserID = ?
+                GROUP BY c.ChatID, t.ID, t.Name, t.Surname, t.Course, m.MessageText, m.Timestamp
+                ORDER BY m.Timestamp DESC
+            `, [userId, userId]);
+        } else {
+            chats = await db.query(`
+                SELECT c.ChatID, u.ID as UserID, u.Name, u.Surname, u.Course, 
+                       m.MessageText as LastMessage, m.Timestamp as LastMessageTime,
+                       SUM(CASE WHEN m.IsRead = FALSE AND m.ReceiverID = ? THEN 1 ELSE 0 END) as UnreadCount
+                FROM Chats c
+                JOIN Users u ON c.UserID = u.ID
+                LEFT JOIN Messages m ON (
+                    m.MessageID = (SELECT MAX(MessageID) FROM Messages 
+                                   WHERE (SenderID = c.UserID AND ReceiverID = c.TutorID) 
+                                   OR (SenderID = c.TutorID AND ReceiverID = c.UserID))
+                )
+                WHERE c.TutorID = ?
+                GROUP BY c.ChatID, u.ID, u.Name, u.Surname, u.Course, m.MessageText, m.Timestamp
+                ORDER BY m.Timestamp DESC
+            `, [userId, userId]);
+        }
+        
+        res.json(chats);
+    } catch (error) {
+        console.error("Error fetching chats:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Get messages in a chat
+app.post("/api/chats/:chatId/messages", isAuthenticated, async (req, res) => {
+    try {
+        const chatId = req.params.chatId;
+        const { messageText } = req.body;
+        const userId = req.session.user.id;
+        const userType = req.session.user.type;
+
+        const chat = await db.query("SELECT * FROM Chats WHERE ChatID = ?", [chatId]);
+        if (chat.length === 0) {
+            return res.status(404).json({ error: "Chat not found" });
+        }
+
+        const isUser = userType === 'user';
+        const receiverId = isUser ? chat[0].TutorID : chat[0].UserID;
+        const receiverType = isUser ? 'tutor' : 'user';
+
+        const result = await db.query(`
+            INSERT INTO Messages (SenderID, SenderType, ReceiverID, ReceiverType, MessageText)
+            VALUES (?, ?, ?, ?, ?)
+        `, [userId, userType, receiverId, receiverType, messageText]);
+
+        await db.query(`UPDATE Chats SET LastMessageTimestamp = NOW() WHERE ChatID = ?`, [chatId]);
+        
+        // Send real-time update to all clients in this chat
+        wss.clients.forEach(client => {
+            if (client.chatId === chatId && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    type: 'new_message',
+                    messageId: result.insertId
+                }));
+            }
+        });
+
+        res.json({ success: true, messageId: result.insertId });
+    } catch (error) {
+        console.error("Error sending message:", error);
+        res.status(500).json({ error: "Failed to send message" });
+    }
+});
+
+// Send a message
+app.post("/api/chats/:chatId/messages", isAuthenticated, async (req, res) => {
+    try {
+        const chatId = req.params.chatId;
+        const { messageText } = req.body;
+        const userId = req.session.user.id;
+        
+        // Verify access to chat
+        const chat = await db.query("SELECT * FROM Chats WHERE ChatID = ?", [chatId]);
+        if (chat.length === 0) {
+            return res.status(404).json({ error: "Chat not found" });
+        }
+        
+        // Determine receiver
+        const receiverId = userId === chat[0].UserID ? chat[0].TutorID : chat[0].UserID;
+        
+        // Save message
+        const result = await db.query(`
+            INSERT INTO Messages (SenderID, ReceiverID, MessageText)
+            VALUES (?, ?, ?)
+        `, [userId, receiverId, messageText]);
+        
+        // Update last message timestamp in chat
+        await db.query(`
+            UPDATE Chats 
+            SET LastMessageTimestamp = NOW() 
+            WHERE ChatID = ?
+        `, [chatId]);
+        
+        res.json({ success: true, messageId: result.insertId });
+    } catch (error) {
+        console.error("Error sending message:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Create a new chat
+app.post("/api/chats", isAuthenticated, async (req, res) => {
+    try {
+        const { tutorId } = req.body;
+        const userId = req.session.user.id;
+        
+        if (req.session.user.type !== 'user') {
+            return res.status(403).json({ error: "Only users can initiate chats" });
+        }
+        
+        // Verify tutor exists
+        const tutor = await db.query("SELECT * FROM Tutors WHERE ID = ?", [tutorId]);
+        if (tutor.length === 0) {
+            return res.status(404).json({ error: "Tutor not found" });
+        }
+        
+        // Check if chat already exists
+        const existingChat = await db.query(`
+            SELECT * FROM Chats 
+            WHERE UserID = ? AND TutorID = ?
+        `, [userId, tutorId]);
+        
+        if (existingChat.length > 0) {
+            return res.json({ chatId: existingChat[0].ChatID });
+        }
+        
+        // Create new chat
+        const result = await db.query(`
+            INSERT INTO Chats (UserID, TutorID, LastMessageTimestamp)
+            VALUES (?, ?, NOW())
+        `, [userId, tutorId]);
+        
+        res.json({ chatId: result.insertId });
+    } catch (error) {
+        console.error("Error creating chat:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Chats list page
+app.get("/chats", isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        const userType = req.session.user.type;
+        
+        let chats;
+        if (userType === 'user') {
+            chats = await db.query(`
+                SELECT c.ChatID, t.ID as TutorID, t.Name, t.Surname, t.Course, 
+                       m.MessageText as LastMessage, m.Timestamp as LastMessageTime,
+                       SUM(CASE WHEN m.IsRead = FALSE AND m.ReceiverID = ? THEN 1 ELSE 0 END) as UnreadCount
+                FROM Chats c
+                JOIN Tutors t ON c.TutorID = t.ID
+                LEFT JOIN Messages m ON (
+                    m.MessageID = (SELECT MAX(MessageID) FROM Messages 
+                                   WHERE (SenderID = c.UserID AND ReceiverID = c.TutorID) 
+                                   OR (SenderID = c.TutorID AND ReceiverID = c.UserID))
+                )
+                WHERE c.UserID = ?
+                GROUP BY c.ChatID, t.ID, t.Name, t.Surname, t.Course, m.MessageText, m.Timestamp
+                ORDER BY m.Timestamp DESC
+            `, [userId, userId]);
+        } else {
+            chats = await db.query(`
+                SELECT c.ChatID, u.ID as UserID, u.Name, u.Surname, u.Course, 
+                       m.MessageText as LastMessage, m.Timestamp as LastMessageTime,
+                       SUM(CASE WHEN m.IsRead = FALSE AND m.ReceiverID = ? THEN 1 ELSE 0 END) as UnreadCount
+                FROM Chats c
+                JOIN Users u ON c.UserID = u.ID
+                LEFT JOIN Messages m ON (
+                    m.MessageID = (SELECT MAX(MessageID) FROM Messages 
+                                   WHERE (SenderID = c.UserID AND ReceiverID = c.TutorID) 
+                                   OR (SenderID = c.TutorID AND ReceiverID = c.UserID))
+                )
+                WHERE c.TutorID = ?
+                GROUP BY c.ChatID, u.ID, u.Name, u.Surname, u.Course, m.MessageText, m.Timestamp
+                ORDER BY m.Timestamp DESC
+            `, [userId, userId]);
+        }
+        
+        res.render("chats-list", { 
+            chats, 
+            currentUser: req.session.user,
+            formatTime: (timestamp) => {
+                if (!timestamp) return '';
+                const date = new Date(timestamp);
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        });
+    } catch (error) {
+        console.error("Error loading chats:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Chat page
+app.get("/chat/:chatId", isAuthenticated, async (req, res) => {
+    try {
+        const chatId = req.params.chatId;
+        const userId = req.session.user.id;
+        
+        // Verify access to chat
+        const chat = await db.query(`
+            SELECT c.*, 
+                   u.Name as UserName, u.Surname as UserSurname, u.Course as UserCourse,
+                   t.Name as TutorName, t.Surname as TutorSurname, t.Course as TutorCourse
+            FROM Chats c
+            LEFT JOIN Users u ON c.UserID = u.ID
+            LEFT JOIN Tutors t ON c.TutorID = t.ID
+            WHERE c.ChatID = ? AND (c.UserID = ? OR c.TutorID = ?)
+        `, [chatId, userId, userId]);
+        
+        if (chat.length === 0) {
+            return res.status(403).send("Access denied");
+        }
+        
+        // Get messages
+        const messages = await db.query(`
+            SELECT m.*, 
+                   CASE 
+                     WHEN m.SenderID = ? THEN 'sent' 
+                     ELSE 'received' 
+                   END as messageType,
+                   IFNULL(u.Name, t.Name) as SenderName,
+                   IFNULL(u.Surname, t.Surname) as SenderSurname
+            FROM Messages m
+            LEFT JOIN Users u ON m.SenderID = u.ID
+            LEFT JOIN Tutors t ON m.SenderID = t.ID
+            WHERE (m.SenderID = ? AND m.ReceiverID = ?) 
+               OR (m.SenderID = ? AND m.ReceiverID = ?)
+            ORDER BY m.Timestamp ASC
+        `, [userId, chat[0].UserID, chat[0].TutorID, chat[0].TutorID, chat[0].UserID]);
+        
+        // Mark messages as read
+        await db.query(`
+            UPDATE Messages 
+            SET IsRead = TRUE 
+            WHERE ReceiverID = ? AND SenderID = ? AND IsRead = FALSE
+        `, [userId, userId === chat[0].UserID ? chat[0].TutorID : chat[0].UserID]);
+        
+        // Determine partner info
+        const partner = {
+            ID: userId === chat[0].UserID ? chat[0].TutorID : chat[0].UserID,
+            Name: userId === chat[0].UserID ? chat[0].TutorName : chat[0].UserName,
+            Surname: userId === chat[0].UserID ? chat[0].TutorSurname : chat[0].UserSurname,
+            Course: userId === chat[0].UserID ? chat[0].TutorCourse : chat[0].UserCourse
+        };
+        
+        res.render("chat", { 
+            messages,
+            partner,
+            currentUser: req.session.user,
+            formatTime: (timestamp) => {
+                if (!timestamp) return '';
+                const date = new Date(timestamp);
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        });
+    } catch (error) {
+        console.error("Error loading chat:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Start a new chat
+app.get("/start-chat/:tutorId", isUser, async (req, res) => {
+    try {
+        const tutorId = req.params.tutorId;
+        const userId = req.session.user.id;
+        
+        // Check if chat already exists
+        const existingChat = await db.query(`
+            SELECT * FROM Chats 
+            WHERE UserID = ? AND TutorID = ?
+        `, [userId, tutorId]);
+        
+        let chatId;
+        if (existingChat.length > 0) {
+            chatId = existingChat[0].ChatID;
+        } else {
+            // Create new chat
+            const result = await db.query(`
+                INSERT INTO Chats (UserID, TutorID, LastMessageTimestamp)
+                VALUES (?, ?, NOW())
+            `, [userId, tutorId]);
+            chatId = result.insertId;
+        }
+        
+        res.redirect(`/chat/${chatId}`);
+    } catch (error) {
+        console.error("Error starting chat:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get('/download/:filename', (req, res, next) => {
+    const sanitizedFilename = sanitize(req.params.filename);
+    if (sanitizedFilename !== req.params.filename) {
+        return res.status(400).send('Invalid filename');
+    }
+    next();
+}, (req, res) => {
+    const filePath = path.join(__dirname, '../uploads', req.params.filename);
+    
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send('File not found');
+    }
+
+    // Set headers for file download
+    res.setHeader('Content-Disposition', `attachment; filename="${req.params.filename}"`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+});
+
+app.post("/api/chats/:chatId/files", isAuthenticated, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const chatId = req.params.chatId;
+        const userId = req.session.user.id;
+        const userType = req.session.user.type;
+        
+        const chat = await db.query("SELECT * FROM Chats WHERE ChatID = ?", [chatId]);
+        if (chat.length === 0) {
+            // Clean up the uploaded file if chat doesn't exist
+            fs.unlinkSync(req.file.path);
+            return res.status(404).json({ error: "Chat not found" });
+        }
+
+        const isUser = userType === 'user';
+        const receiverId = isUser ? chat[0].TutorID : chat[0].UserID;
+        const receiverType = isUser ? 'tutor' : 'user';
+
+        const fileName = req.file.originalname;
+        
+        const result = await db.query(`
+            INSERT INTO Messages (SenderID, SenderType, ReceiverID, ReceiverType, MessageText, IsFile)
+            VALUES (?, ?, ?, ?, ?, TRUE)
+        `, [userId, userType, receiverId, receiverType, fileName]);
+
+        await db.query(`UPDATE Chats SET LastMessageTimestamp = NOW() WHERE ChatID = ?`, [chatId]);
+        
+        wss.clients.forEach(client => {
+            if (client.chatId === chatId && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    type: 'new_message',
+                    messageId: result.insertId
+                }));
+            }
+        });
+
+        res.json({ success: true, messageId: result.insertId });
+    } catch (error) {
+        console.error("Error sending file:", error);
+        // Clean up the uploaded file if error occurs
+        if (req.file) {
+            fs.unlinkSync(req.file.path);
+        }
+        res.status(500).json({ error: "Failed to send file" });
+    }
+});
+
 // Log out of the account
 app.get("/logout", (req, res) => {
     req.session.destroy(() => {
@@ -350,6 +772,22 @@ app.get("/logout", (req, res) => {
 });
 
 // Start the server
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
     console.log("The server runs at http://127.0.0.1:3000/");
+});
+
+
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws, req) => {
+    const chatId = req.url.split('/')[3];
+    ws.chatId = chatId;
+    
+    ws.on('message', (message) => {
+        wss.clients.forEach(client => {
+            if (client !== ws && client.readyState === WebSocket.OPEN && client.chatId === chatId) {
+                client.send(message);
+            }
+        });
+    });
 });

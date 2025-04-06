@@ -1,0 +1,32 @@
+extends base
+
+block styles
+  link(rel="stylesheet", href="/css/chats.css")
+
+block content
+  .chats-container
+    .chats-header
+      h1 My Messages
+    
+    .chats-list
+      if chats.length === 0
+        .no-chats
+          p.placeholder-text You don't have any messages yet
+          .spacer
+          a(href="/tutors").browse-tutors Browse tutors
+      else
+        each chat in chats
+          a.chat-item(href=`/chat/${chat.ChatID}`, data-chat-id=chat.ChatID)
+            .chat-avatar
+              img(src="/images/user.svg", alt="Avatar")
+            .chat-info
+              .chat-name #{chat.Name} #{chat.Surname}
+              .chat-course #{chat.Course}
+              .chat-preview #{chat.LastMessage}
+            .chat-meta
+              .chat-time #{formatTime(chat.LastMessageTime)}
+              if chat.UnreadCount > 0
+                .unread-count #{chat.UnreadCount}
+
+block scripts
+  script(src="/scripts/chats.js")

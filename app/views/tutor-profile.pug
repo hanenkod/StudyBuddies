@@ -23,7 +23,7 @@ block content
               span.edit-profile Edit Profile
             a.btn-logout(href="/logout") Logout
           else
-            button.btn-message Message
+            a(href=`/start-chat/${tutor.ID}`).btn-message Message
             button.btn-report Report
 
       .profile-content

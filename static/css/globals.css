@@ -88,3 +88,35 @@ body.login-page {
   padding-bottom: 0 !important;
 }
 
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 23px 50px;
+    gap: 40px;
+  }
+  
+  .nav-link {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px;
+    gap: 25px;
+    height: 60px;
+    justify-content: center;
+  }
+  
+  .nav-link {
+    font-size: 16px;
+  }
+  
+  .footer {
+    padding: 15px 0;
+    font-size: 14px;
+  }
+  
+  body {
+    padding-bottom: 50px;
+  }
+}

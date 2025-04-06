@@ -14,7 +14,7 @@ html
           a(href=(currentUser.type === 'tutor' ? `/tutor-profile/${currentUser.id}` : `/user-profile/${currentUser.id}`)).nav-link Profile
         else
           a(href="/login").nav-link Login
-
+        a(href="/chats").nav-link Chats
     block content
 
     block footer

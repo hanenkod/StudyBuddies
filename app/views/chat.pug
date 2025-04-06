@@ -1,0 +1,39 @@
+extends base
+
+block styles
+  link(rel="stylesheet", href="/css/chat.css")
+
+block content
+  .chat-container
+    .chat-header
+      .chat-partner
+        img.avatar(src="/images/user.svg", alt="Avatar")
+        .partner-info
+          h2 #{partner.Name} #{partner.Surname}
+          p #{partner.Course}
+      .chat-actions
+        a.btn-back(href="/chats") &times;
+    
+    .messages-container#messagesContainer
+      each message in messages
+        if message.IsFile
+          .message(class=message.messageType)
+            a.message-file(href=`/download/${message.MessageText}`, target="_blank") #{message.MessageText}
+            .message-time #{formatTime(message.Timestamp)}
+            .message-sender #{message.SenderName}
+        else
+          .message(class=message.messageType)
+            .message-content #{message.MessageText}
+            .message-time #{formatTime(message.Timestamp)}
+            .message-sender #{message.SenderName}
+    
+    .message-input-container
+      .input-wrapper
+        label.file-upload(for="fileInput")
+          img(src="/images/attach-file.svg", alt="Attach file")
+        input#fileInput(type="file", style="display: none")
+        textarea#messageInput(placeholder="Type your message...")
+      button#sendButton Send
+
+block scripts
+  script(src="/scripts/chat.js")

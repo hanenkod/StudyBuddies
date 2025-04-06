@@ -2,79 +2,83 @@ extends base
 
 block styles
   link(rel="stylesheet", href="/css/style.css")
+  link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DM+Sans:wght@400;500&display=swap")
 
 block content
   .tutor-list-page
-    .div
-      .text-wrapper-22 Find your tutor
-      .frame
-        input(type="text", id="searchInput", placeholder="Search", value=searchQuery || '')
-        img.interface-essential(src="/images/search.svg")
+    .page-container
+      header.page-header
+        h1.page-title Find Your Perfect Tutor
+        .search-container
+          input(type="text", id="searchInput", placeholder="Search by name, subject or skill...", value=searchQuery || '')
+          button.search-button
+            img.search-icon(src="/images/search.svg", alt="Search")
 
-      .text-wrapper-23 Recommended tutors for you
-      .recommended-tutors
-        if !searchQuery || searchQuery === ''
-          each tutor in tutors.filter(t => t.Rating >= 5).slice(0, 3)
-            .tutor-card
-              img.user(src="/images/user.svg")
-              a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-6 #{tutor.Name} #{tutor.Surname}
-              .text-wrapper-3 #{tutor.Short_Course_Description}
+      section.recommended-section
+        h2.section-title Recommended Tutors
+        .recommended-tutors-grid
+          if !searchQuery || searchQuery === ''
+            each tutor in tutors.filter(t => t.Rating >= 4.5).slice(0, 3)
+              - const ratingValue = parseFloat(tutor.Rating) || 0;
+              .tutor-card.recommended
+                .tutor-avatar
+                  img.user(src=tutor.Avatar || "/images/user.svg", alt=tutor.Name)
+                  .rating-badge
+                    span #{ratingValue.toFixed(1)}
+                .tutor-info
+                  a.tutor-name(href=`/tutor-profile/${tutor.ID}`) #{tutor.Name} #{tutor.Surname}
+                  .tutor-subject #{tutor.Course}
+                  .tutor-description #{tutor.Short_Course_Description}
+                .tutor-actions
+                  button.view-profile(data-tutor-id=tutor.ID) View Profile
 
-      hr.line
+      .divider
 
-      .filters
-        .frame-8
-          .text-wrapper-9 Category
-          img.icon-2(src="/images/chevron-down.svg")
-        .frame-2
-          select#sort-by
-            option(value="default") Default
-            option(value="alphabetical") A - Z
-            option(value="rating") Rating
-      .frame-3#tutorList
-        each tutor, index in tutors.filter(t => t.Rating < 5)
-          .group(data-index=index)
-            .frame-4
-              .frame-5
-                a(href=`/tutor-profile/${tutor.ID}`).text-wrapper-10 #{tutor.Name} #{tutor.Surname}
-                .text-wrapper-11 #{tutor.Course}
-              button.button.send-message-btn(data-tutor-id=tutor.ID, data-tutor-name=`${tutor.Name} ${tutor.Surname}`)
-                .text-wrapper-12 Send Message
-              img.user-2(src="/images/user.svg")
-              p.p #{tutor.Short_Message}
-              .frame-6(data-rating=tutor.Rating)
-                - for (let i = 0; i < 5; i++)
-                  .star
-                    img.star-icon(src="/images/star-filled.svg", class="filled")
-                    img.star-icon(src="/images/star-half-filled.svg", class="half")
-      .group-2
-        button#previousBtn.div-wrapper
-          .text-wrapper-14 Previous
-        button#nextBtn.button-2
-          .text-wrapper-15 Next
-        .group-3
-          .group-wrapper
-            .group-4
-              .text-wrapper-16.page-btn(data-page="0") 1
-              .text-wrapper-17.page-btn(data-page="1") 2
-              .text-wrapper-18.page-btn(data-page="2") 3
-              .text-wrapper-20 ...
-              .text-wrapper-19.page-btn(data-page="6") 7
-          img.arrows-chevron#prevPageBtn(src="/images/chevron-left.svg")
-          img.arrows-chevron-2#nextPageBtn(src="/images/chevron-right.svg")
+      section.all-tutors-section
+        .section-header
+          h2.section-title All Tutors
+          .filters-container
+            .filter-dropdown
+              label(for="sort-by") Sort by:
+              select#sort-by
+                option(value="default") Recommended
+                option(value="alphabetical") Alphabetical (A-Z)
+                option(value="rating") Highest Rating
 
-      .modal-overlay
-      .modal
-        .modal-content
-          p.modal-title Send a message to #{tutorName}
-          textarea.modal-input(placeholder="Type your message here...")
-          .modal-buttons
-            button.modal-button.send Send
-            button.modal-button.cancel Cancel
+        .tutors-list
+          each tutor in tutors.filter(t => parseFloat(t.Rating) < 4.5 || !t.Rating)
+            - const ratingValue = parseFloat(tutor.Rating) || 0;
+            .tutor-card.regular
+              .tutor-avatar
+                img.user(src=tutor.Avatar || "/images/user.svg", alt=tutor.Name)
+              .tutor-info
+                a.tutor-name(href=`/tutor-profile/${tutor.ID}`) #{tutor.Name} #{tutor.Surname}
+                .tutor-subject #{tutor.Course}
+                .tutor-bio #{tutor.Short_Message}
+                .tutor-rating(data-rating=ratingValue)
+                  - for (let i = 0; i < 5; i++)
+                    .star
+                      img.star-icon(src="/images/star-filled.svg", class="filled")
+                      img.star-icon(src="/images/star-half-filled.svg", class="half")
+              .tutor-actions
+                button.view-profile(data-tutor-id=tutor.ID) View Profile
+
+        .pagination-container
+          button.pagination-button#previousBtn(disabled) 
+            img.arrow-icon(src="/images/chevron-left.svg", alt="Previous")
+            span Previous
+          .page-numbers
+            a.page-btn.active(data-page="0") 1
+            a.page-btn(data-page="1") 2
+            a.page-btn(data-page="2") 3
+            span.ellipsis ...
+            a.page-btn(data-page="6") 7
+          button.pagination-button#nextBtn
+            span Next
+            img.arrow-icon(src="/images/chevron-right.svg", alt="Next")
 
 block scripts
   script(src="/scripts/showRating.js")
-  script(src="/scripts/modal.js")
   script(src="/scripts/sort.js")
   script(src="/scripts/buttons.js")
   script(src="/scripts/search.js")
