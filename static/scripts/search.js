@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (searchTerm === '') {
             tutorCards.forEach(card => {
-                card.style.display = 'grid'; // Изменено с 'flex' на 'grid'
+                card.style.display = 'grid';
                 card.classList.remove('recommended');
             });
             recommendedTutors.forEach(card => {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const bio = card.querySelector('.tutor-bio')?.textContent.toLowerCase() || '';
 
             if (name.includes(searchTerm) || subject.includes(searchTerm) || bio.includes(searchTerm)) {
-                card.style.display = 'grid'; // Изменено с 'flex' на 'grid'
+                card.style.display = 'grid';
                 card.classList.remove('recommended');
                 hasMatches = true;
             } else {

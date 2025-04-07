@@ -8,7 +8,7 @@ block content
     .profile-container
       .profile-header
         .profile-avatar
-          .ellipse
+          img.user(src=tutor.Avatar || "/images/user.svg", alt=tutor.Name)
         .profile-info
           h1.profile-name= tutor.Name + ' ' + tutor.Surname
           p.profile-course= tutor.Course
@@ -31,7 +31,6 @@ block content
           button.tab.active Subjects
           button.tab Opened Tasks
           button.tab Resolved Tasks
-          button.tab Messages
 
         .profile-rating
           .rating-display

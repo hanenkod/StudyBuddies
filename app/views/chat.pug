@@ -4,12 +4,22 @@ block styles
   link(rel="stylesheet", href="/css/chat.css")
 
 block content
+
+  script#currentUser(type="application/json").
+    {
+      "id": "#{currentUser.id}",
+      "name": "#{currentUser.name}",
+      "surname": "#{currentUser.surname}",
+      "type": "#{currentUser.type}"
+    }
+
   .chat-container
     .chat-header
       .chat-partner
         img.avatar(src="/images/user.svg", alt="Avatar")
         .partner-info
-          h2 #{partner.Name} #{partner.Surname}
+          a(href=profileLink)
+            h2 #{partner.Name} #{partner.Surname}
           p #{partner.Course}
       .chat-actions
         a.btn-back(href="/chats") &times;
@@ -25,7 +35,7 @@ block content
           .message(class=message.messageType)
             .message-content #{message.MessageText}
             .message-time #{formatTime(message.Timestamp)}
-            .message-sender #{message.SenderName}
+            .message-sender #{message.SenderFullName || (message.SenderName + ' ' + (message.SenderSurname || ''))}
     
     .message-input-container
       .input-wrapper

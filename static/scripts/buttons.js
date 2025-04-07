@@ -1,5 +1,4 @@
 function initButtons() {
-    // View Profile buttons
     document.querySelectorAll('.view-profile').forEach(button => {
       button.addEventListener('click', function() {
         const tutorId = this.dataset.tutorId;
@@ -7,7 +6,6 @@ function initButtons() {
       });
     });
   
-    // Pagination buttons
     const previousBtn = document.getElementById('previousBtn');
     const nextBtn = document.getElementById('nextBtn');
     const pageButtons = document.querySelectorAll('.page-btn:not(.ellipsis)');
@@ -55,13 +53,11 @@ function initButtons() {
         tutor.style.display = 'none';
       }
     });
-    
-    // Update active page button
+
     document.querySelectorAll('.page-btn').forEach(btn => {
       btn.classList.toggle('active', parseInt(btn.dataset.page) === page);
     });
     
-    // Update navigation buttons
     document.getElementById('previousBtn').disabled = page === 0;
     document.getElementById('nextBtn').disabled = startIndex + tutorsPerPage >= tutors.length;
   }

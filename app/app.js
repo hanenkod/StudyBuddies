@@ -112,7 +112,6 @@ app.post("/register", async (req, res) => {
     const { name, surname, course, email, password, userType, subjects, shortMessage } = req.body;
     
     try {
-        // Check if email already exists in either table
         const userCheck = await db.query("SELECT * FROM Users WHERE Email = ?", [email]);
         const tutorCheck = await db.query("SELECT * FROM Tutors WHERE Email = ?", [email]);
         
@@ -124,19 +123,15 @@ app.post("/register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         if (userType === "user") {
-            // Insert into Users table
             const userSql = 
                 `INSERT INTO Users (Name, Surname, Course, Email, Password) 
                 VALUES (?, ?, ?, ?, ?)`
             ;
             const userResult = await db.query(userSql, [name, surname, course, email, hashedPassword]);
             userId = userResult.insertId;
-            
-            // Handle subjects for user
             await processSubjects(subjects, userId, 'user');
             
         } else {
-            // Insert into Tutors table
             const tutorSql = 
                 `INSERT INTO Tutors (Name, Surname, Course, Email, Password, Short_Message) 
                 VALUES (?, ?, ?, ?, ?, ?)`
@@ -151,11 +146,9 @@ app.post("/register", async (req, res) => {
             ]);
             userId = tutorResult.insertId;
             
-            // Handle subjects for tutor
             await processSubjects(subjects, userId, 'tutor');
         }
         
-        // Set session and redirect
         req.session.user = {
             id: userId,
             name,
@@ -177,7 +170,6 @@ app.post("/register", async (req, res) => {
 // Helper function to process subjects
 async function processSubjects(subjects, userId, userType) {
     for (const subjectName of subjects) {
-        // Check if subject exists
         const subjectCheck = await db.query("SELECT SubjectID FROM Subjects WHERE Name = ?", [subjectName]);
         
         let subjectId;
@@ -185,12 +177,9 @@ async function processSubjects(subjects, userId, userType) {
         if (subjectCheck.length > 0) {
             subjectId = subjectCheck[0].SubjectID;
         } else {
-            // Create new subject if it doesn't exist
             const newSubject = await db.query("INSERT INTO Subjects (Name) VALUES (?)", [subjectName]);
             subjectId = newSubject.insertId;
         }
-        
-        // Insert into appropriate join table
         const joinTable = userType === 'user' ? 'Users_Subjects' : 'Tutors_Subjects';
         const idField = userType === 'user' ? 'UserID' : 'TutorID';
         
@@ -210,13 +199,10 @@ app.post("/login", async (req, res) => {
     try {
         let user;
         let userType = "user"; 
-
-        // Check Users table
         let userSql = "SELECT * FROM Users WHERE Email = ?";
         let users = await db.query(userSql, [email]);
 
         if (users.length === 0) {
-            // Check Tutors table
             userSql = "SELECT * FROM Tutors WHERE Email = ?";
             users = await db.query(userSql, [email]);
             if (users.length === 0) {
@@ -226,8 +212,6 @@ app.post("/login", async (req, res) => {
         }
 
         user = users[0];
-
-        // Compare hashed password
         const validPassword = await bcrypt.compare(password, user.Password);
         if (!validPassword) {
             return res.status(401).json({ success: false, message: "Incorrect email or password" });
@@ -260,8 +244,6 @@ app.get("/user-profile/:id", async (req, res) => {
         JOIN Subjects ON Users_Subjects.SubjectID = Subjects.SubjectID 
         WHERE Users_Subjects.UserID = ?`;
         const subjects = await db.query(subjectsSql, [userId]);
-
-        // Get the average user rating
         const avgRatingSql = "SELECT AVG(Rating) AS avgRating FROM Users_Ratings WHERE UserID = ?";
         const avgRatingResult = await db.query(avgRatingSql, [userId]);
         const avgRating = avgRatingResult[0].avgRating || 0;
@@ -325,8 +307,6 @@ app.get("/tutor-profile/:id", async (req, res) => {
             WHERE Tutors_Subjects.TutorID = ?
         `;
         const subjects = await db.query(subjectsSql, [tutorId]);
-
-        // Get the average tutor rating
         const avgRatingSql = "SELECT AVG(Rating) AS avgRating FROM Tutors_Ratings WHERE TutorID = ?";
         const avgRatingResult = await db.query(avgRatingSql, [tutorId]);
         const avgRating = avgRatingResult[0].avgRating || 0;
@@ -445,7 +425,6 @@ app.post("/api/chats/:chatId/messages", isAuthenticated, async (req, res) => {
 
         await db.query(`UPDATE Chats SET LastMessageTimestamp = NOW() WHERE ChatID = ?`, [chatId]);
         
-        // Send real-time update to all clients in this chat
         wss.clients.forEach(client => {
             if (client.chatId === chatId && client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify({
@@ -468,33 +447,49 @@ app.post("/api/chats/:chatId/messages", isAuthenticated, async (req, res) => {
         const chatId = req.params.chatId;
         const { messageText } = req.body;
         const userId = req.session.user.id;
-        
-        // Verify access to chat
+        const userType = req.session.user.type;
+
         const chat = await db.query("SELECT * FROM Chats WHERE ChatID = ?", [chatId]);
         if (chat.length === 0) {
             return res.status(404).json({ error: "Chat not found" });
         }
-        
-        // Determine receiver
-        const receiverId = userId === chat[0].UserID ? chat[0].TutorID : chat[0].UserID;
-        
-        // Save message
+
+        const isUser = userType === 'user';
+        const receiverId = isUser ? chat[0].TutorID : chat[0].UserID;
+        const receiverType = isUser ? 'tutor' : 'user';
+
         const result = await db.query(`
-            INSERT INTO Messages (SenderID, ReceiverID, MessageText)
-            VALUES (?, ?, ?)
-        `, [userId, receiverId, messageText]);
+            INSERT INTO Messages (SenderID, SenderType, ReceiverID, ReceiverType, MessageText)
+            VALUES (?, ?, ?, ?, ?)
+        `, [userId, userType, receiverId, receiverType, messageText]);
+
+        await db.query(`UPDATE Chats SET LastMessageTimestamp = NOW() WHERE ChatID = ?`, [chatId]);
         
-        // Update last message timestamp in chat
-        await db.query(`
-            UPDATE Chats 
-            SET LastMessageTimestamp = NOW() 
-            WHERE ChatID = ?
-        `, [chatId]);
-        
+        wss.clients.forEach(client => {
+            if (client.chatId === chatId && client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    type: 'new_message',
+                    message: {
+                        MessageID: result.insertId,
+                        MessageText: messageText,
+                        SenderID: userId,
+                        SenderType: userType,
+                        ReceiverID: receiverId,
+                        ReceiverType: receiverType,
+                        Timestamp: new Date().toISOString(),
+                        IsRead: false,
+                        IsFile: false,
+                        SenderName: req.session.user.name + ' ' + req.session.user.surname
+                    },
+                    senderId: userId
+                }));
+            }
+        });
+
         res.json({ success: true, messageId: result.insertId });
     } catch (error) {
         console.error("Error sending message:", error);
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Failed to send message" });
     }
 });
 
@@ -508,13 +503,11 @@ app.post("/api/chats", isAuthenticated, async (req, res) => {
             return res.status(403).json({ error: "Only users can initiate chats" });
         }
         
-        // Verify tutor exists
         const tutor = await db.query("SELECT * FROM Tutors WHERE ID = ?", [tutorId]);
         if (tutor.length === 0) {
             return res.status(404).json({ error: "Tutor not found" });
         }
         
-        // Check if chat already exists
         const existingChat = await db.query(`
             SELECT * FROM Chats 
             WHERE UserID = ? AND TutorID = ?
@@ -524,7 +517,6 @@ app.post("/api/chats", isAuthenticated, async (req, res) => {
             return res.json({ chatId: existingChat[0].ChatID });
         }
         
-        // Create new chat
         const result = await db.query(`
             INSERT INTO Chats (UserID, TutorID, LastMessageTimestamp)
             VALUES (?, ?, NOW())
@@ -597,9 +589,7 @@ app.get("/chats", isAuthenticated, async (req, res) => {
 app.get("/chat/:chatId", isAuthenticated, async (req, res) => {
     try {
         const chatId = req.params.chatId;
-        const userId = req.session.user.id;
-        
-        // Verify access to chat
+        const userId = req.session.user.id;        
         const chat = await db.query(`
             SELECT c.*, 
                    u.Name as UserName, u.Surname as UserSurname, u.Course as UserCourse,
@@ -614,31 +604,27 @@ app.get("/chat/:chatId", isAuthenticated, async (req, res) => {
             return res.status(403).send("Access denied");
         }
         
-        // Get messages
         const messages = await db.query(`
             SELECT m.*, 
                    CASE 
                      WHEN m.SenderID = ? THEN 'sent' 
                      ELSE 'received' 
                    END as messageType,
-                   IFNULL(u.Name, t.Name) as SenderName,
-                   IFNULL(u.Surname, t.Surname) as SenderSurname
+                   CONCAT(IFNULL(u.Name, t.Name), ' ', IFNULL(u.Surname, t.Surname)) as SenderFullName
             FROM Messages m
-            LEFT JOIN Users u ON m.SenderID = u.ID
-            LEFT JOIN Tutors t ON m.SenderID = t.ID
+            LEFT JOIN Users u ON m.SenderID = u.ID AND m.SenderType = 'user'
+            LEFT JOIN Tutors t ON m.SenderID = t.ID AND m.SenderType = 'tutor'
             WHERE (m.SenderID = ? AND m.ReceiverID = ?) 
                OR (m.SenderID = ? AND m.ReceiverID = ?)
             ORDER BY m.Timestamp ASC
         `, [userId, chat[0].UserID, chat[0].TutorID, chat[0].TutorID, chat[0].UserID]);
         
-        // Mark messages as read
         await db.query(`
             UPDATE Messages 
             SET IsRead = TRUE 
             WHERE ReceiverID = ? AND SenderID = ? AND IsRead = FALSE
         `, [userId, userId === chat[0].UserID ? chat[0].TutorID : chat[0].UserID]);
         
-        // Determine partner info
         const partner = {
             ID: userId === chat[0].UserID ? chat[0].TutorID : chat[0].UserID,
             Name: userId === chat[0].UserID ? chat[0].TutorName : chat[0].UserName,
@@ -653,8 +639,15 @@ app.get("/chat/:chatId", isAuthenticated, async (req, res) => {
             formatTime: (timestamp) => {
                 if (!timestamp) return '';
                 const date = new Date(timestamp);
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
+                return date.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    timeZone: 'UTC'
+                });
+            },
+            profileLink: userId === chat[0].UserID ? 
+                `/tutor-profile/${chat[0].TutorID}` : 
+                `/user-profile/${chat[0].UserID}`
         });
     } catch (error) {
         console.error("Error loading chat:", error);
@@ -668,7 +661,6 @@ app.get("/start-chat/:tutorId", isUser, async (req, res) => {
         const tutorId = req.params.tutorId;
         const userId = req.session.user.id;
         
-        // Check if chat already exists
         const existingChat = await db.query(`
             SELECT * FROM Chats 
             WHERE UserID = ? AND TutorID = ?
@@ -678,7 +670,6 @@ app.get("/start-chat/:tutorId", isUser, async (req, res) => {
         if (existingChat.length > 0) {
             chatId = existingChat[0].ChatID;
         } else {
-            // Create new chat
             const result = await db.query(`
                 INSERT INTO Chats (UserID, TutorID, LastMessageTimestamp)
                 VALUES (?, ?, NOW())
@@ -706,7 +697,6 @@ app.get('/download/:filename', (req, res, next) => {
         return res.status(404).send('File not found');
     }
 
-    // Set headers for file download
     res.setHeader('Content-Disposition', `attachment; filename="${req.params.filename}"`);
     res.setHeader('Content-Type', 'application/octet-stream');
     
@@ -726,7 +716,6 @@ app.post("/api/chats/:chatId/files", isAuthenticated, upload.single('file'), asy
         
         const chat = await db.query("SELECT * FROM Chats WHERE ChatID = ?", [chatId]);
         if (chat.length === 0) {
-            // Clean up the uploaded file if chat doesn't exist
             fs.unlinkSync(req.file.path);
             return res.status(404).json({ error: "Chat not found" });
         }
@@ -756,7 +745,6 @@ app.post("/api/chats/:chatId/files", isAuthenticated, upload.single('file'), asy
         res.json({ success: true, messageId: result.insertId });
     } catch (error) {
         console.error("Error sending file:", error);
-        // Clean up the uploaded file if error occurs
         if (req.file) {
             fs.unlinkSync(req.file.path);
         }
@@ -783,11 +771,34 @@ wss.on('connection', (ws, req) => {
     const chatId = req.url.split('/')[3];
     ws.chatId = chatId;
     
-    ws.on('message', (message) => {
-        wss.clients.forEach(client => {
-            if (client !== ws && client.readyState === WebSocket.OPEN && client.chatId === chatId) {
-                client.send(message);
+    ws.on('message', async (message) => {
+        try {
+            const data = JSON.parse(message);
+            
+            if (data.type === 'new_message') {
+                wss.clients.forEach(client => {
+                    if (client.chatId === chatId && client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify({
+                            type: 'new_message',
+                            message: {
+                                MessageID: data.message.MessageID,
+                                MessageText: data.message.MessageText,
+                                SenderID: data.senderId,
+                                SenderType: data.message.SenderType,
+                                ReceiverID: data.message.ReceiverID,
+                                ReceiverType: data.message.ReceiverType,
+                                Timestamp: data.message.Timestamp,
+                                IsRead: data.message.IsRead,
+                                IsFile: data.message.IsFile,
+                                SenderFullName: data.message.SenderFullName || data.message.SenderName
+                            },
+                            senderId: data.senderId
+                        }));
+                    }
+                });
             }
-        });
+        } catch (error) {
+            console.error('WebSocket error:', error);
+        }
     });
 });

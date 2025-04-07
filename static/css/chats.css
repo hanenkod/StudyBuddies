@@ -1,4 +1,3 @@
-/* Основные стили контейнера */
 .chats-container {
   max-width: 1200px;
   margin: 40px auto;
@@ -71,7 +70,7 @@
   object-fit: contain;
 }
 
-/* Информация о чате */
+
 .chat-info {
   flex: 1;
   min-width: 0;
@@ -137,7 +136,7 @@
   padding: 0 5px;
 }
 
-/* Стили для пустого состояния */
+
 .no-chats {
   text-align: center;
   padding: 80px 0;
@@ -178,6 +177,15 @@
 
 .browse-tutors:active {
   transform: translateY(-1px);
+}
+
+.partner-info a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.partner-info a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 1024px) {

@@ -73,8 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     leftHalf.classList.add('selected');
                     rightHalf.classList.add('selected');
                 }
-
-                // We define who we evaluate
+                
                 const isTutorPage = window.location.pathname.includes("tutor-profile");
                 const ratingData = isTutorPage
                     ? { tutorID: profileID, rating: selectedRating }
@@ -82,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const endpoint = isTutorPage ? "/tutor-profile" : "/user-profile";
 
-                // We send the assessment to the server
                 try {
                     const response = await fetch(endpoint, {
                         method: 'POST',

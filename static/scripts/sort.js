@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tutors.forEach(tutor => tutor.remove());
             originalOrder.forEach(tutor => {
                 tutorsContainer.appendChild(tutor);
-                tutor.style.display = 'grid'; // Убедимся, что правильный display
-                tutor.classList.remove('recommended'); // Удалим класс recommended
+                tutor.style.display = 'grid'; 
+                tutor.classList.remove('recommended');
             });
         } else {
             tutors.sort((a, b) => {
@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tutors.forEach(tutor => tutor.remove());
             tutors.forEach(tutor => {
                 tutorsContainer.appendChild(tutor);
-                tutor.style.display = 'grid'; // Убедимся, что правильный display
-                tutor.classList.remove('recommended'); // Удалим класс recommended
+                tutor.style.display = 'grid';
+                tutor.classList.remove('recommended');
             });
         }
         
